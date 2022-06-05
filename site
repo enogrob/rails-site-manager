@@ -32,7 +32,7 @@ domain.gmail(){
 }
 
 #projects
-projects(){
+_projects(){
   tl | sed 's/^/  /' 
 }
 projects.init(){ projects_print=$1; }
@@ -42,7 +42,7 @@ projects.ls(){ tdpl; }
 projects.print(){
   if [ "$projects_print" = "true" ]; then
     echo -e "projects:"
-    projects
+    _projects
   fi
 }
 
@@ -56,12 +56,12 @@ ruby.print(){
         ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
         if hash rails 2>/dev/null; then
           rails_version="rails-$(rails --version | awk '{print $2}')"
-          printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
+          printf "\e[1;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
         else
-          printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version"
+          printf "\e[1;34m%s \e[0m%s\n" "  system    " "$ruby_version"
         fi
       else
-        printf "\e[0;34m%s \e[0m%s\n" "  rvm domain" $(rvm current) 
+        printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" $(rvm current) 
       fi
     else
       ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
@@ -120,8 +120,8 @@ site(){
 site.methods(){ echo "help|encora|domain|print|projects"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.print(){
-  echo -e "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m" 
-  printf "\e[0;34m%s \e[0m%s\n" "  git domain" $(domain) 
+  printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
+  printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain) 
   ruby.print
   projects.print
   printf ""  
@@ -133,8 +133,6 @@ site.version(){
 
 domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
 domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-
-encora.init horas.daitangroup.com
 
 ruby.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
 projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
