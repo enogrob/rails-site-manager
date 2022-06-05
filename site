@@ -1,0 +1,140 @@
+#!/bin/bash
+## Crafted (c) 2022 by Encora - We are stronger together
+## Prepared : Roberto Nogueira
+## File     : site
+## Project  : rails-site-manager
+## Reference: bash
+## Depends  : fping, screen.
+## Purpose  : Help to manage ordinary things.
+
+# set -x
+
+export SITE_VERSION=v1.0.00
+export SITE_VERSION_DATE=2022.06.05
+export SITE_UPDATE_MESSAGE=""
+
+# git domains
+domain(){
+  local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
+  echo $domain
+}
+domain.methods(){ echo "help|encora|gmail"; }
+domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "domain" "[$(domain.methods)]"; }
+domain.encora.init(){ encora_name=$1; encora_email=$2; }
+domain.encora(){
+  git config --global user.name "$encora_name"
+  git config --global user.email "$encora_email"
+}
+domain.gmail.init(){ gmail_name=$1; gmail_email=$2; }
+domain.gmail(){
+  git config --global user.name "$gmail_name"
+  git config --global user.email "$gmail_email"
+}
+
+#projects
+projects(){
+  tl | sed 's/^/  /' 
+}
+projects.init(){ projects_print=$1; }
+projects.methods(){ echo "help|ls|print"; }
+projects.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "projects" "[$(projects.methods)]"; }
+projects.ls(){ tdpl; }
+projects.print(){
+  if [ "$projects_print" = "true" ]; then
+    echo -e "projects:"
+    projects
+  fi
+}
+
+ruby.init(){ ruby_print=$1; }
+ruby.print(){
+  local ruby_version
+  local rails_version
+  if [ "$ruby_print" = "true" ]; then 
+    if hash rvm 2>/dev/null; then
+      if test $(rvm current) == 'system'; then
+        ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
+        if hash rails 2>/dev/null; then
+          rails_version="rails-$(rails --version | awk '{print $2}')"
+          printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
+        else
+          printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version"
+        fi
+      else
+        printf "\e[0;34m%s \e[0m%s\n" "  rvm domain" $(rvm current) 
+      fi
+    else
+      ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
+      if hash rails 2>/dev/null; then
+        rails_version="rails-$(rails --version | awk '{print $2}')"
+        printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
+      else
+        printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version"
+      fi
+    fi
+  fi 
+}
+
+# site
+site(){
+  local site_methods="+($(site.methods))"
+  local param_methods="+($(! test -z "$1" && $1.methods))"
+  case $1 in
+    --version|-v|v|version)
+      site.version
+      ;;
+    --help|-h|h|help)
+      printf "\e[1;37m%s \e[0m\n" "Crafted (c) 2021~22 by Encora - We are stronger together"
+      site.version
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(site.help)]" 
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(domain.help)]"
+      printf "\n"  
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(projects.help)]"
+      printf "::\n"  
+      printf "\e[0;32m%s \e[4m%s\e[0m\e[0m\n" "homepage" "https://github.com/enogrob/rails-site-manager"
+      printf "\n"
+      ;;
+    $site_methods)
+      if [ -z "$2" ]; then
+        $1 
+      else  
+        case $2 in
+          $param_methods)
+            $1.$2 ${@:3}
+            ;;
+          *)
+            printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${2}"
+            ;;  
+        esac
+      fi  
+      ;;
+    *)
+      if [ -z "$1" ]; then
+        site.print
+      else   
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
+      fi  
+      ;;
+  esac
+}
+site.methods(){ echo "help|encora|domain|print|projects"; }
+site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
+site.print(){
+  echo -e "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m" 
+  printf "\e[0;34m%s \e[0m%s\n" "  git domain" $(domain) 
+  ruby.print
+  projects.print
+  printf ""  
+}
+site.version(){
+  printf "\e[0;37m%s \e[0m%s\n" "Site" "$SITE_VERSION"
+  printf "\n"
+}
+
+domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
+domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
+
+encora.init horas.daitangroup.com
+
+ruby.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
+projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
