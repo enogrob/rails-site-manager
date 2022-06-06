@@ -75,6 +75,77 @@ ruby.print(){
   fi 
 }
 
+# database
+database.methods(){ echo "help|parse_yml|db_dev|db_tst|has_database|tables|has_tables|records|has_records"; }
+database.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(database.methods)]"; }
+database.parse_yml(){
+  local prefix=$2
+  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+  sed -ne "s|^\($s\):|\1|" \
+       -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
+       -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
+  awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+      }
+  }'  
+}
+database.db_dev(){
+  test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}'
+}
+database.db_tst(){
+  test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}'
+}
+database.has_database(){
+  local db=$1
+  local res
+  mysqlshow -uroot > /dev/null 2>&1
+  if [ $? -eq 1 ]; then 
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "Database error"
+    echo ""
+  else  
+    res=`mysqlshow -uroot | grep -o $db`
+    if [ "$res" == $db ]; then
+      echo 'yes'
+    else
+      echo 'no'  
+    fi
+  fi
+}
+database.tables(){
+  local db=$1
+  local s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+  echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
+
+}
+database.has_tables(){
+  local db=$1
+  local tables=$(database.tables $db)
+  if [ ! "$tables" == '0' ] && [ ! -z $tables ]; then
+    echo 'yes'
+  else
+    echo 'no'  
+  fi
+}
+database.records(){
+  local db=$1
+  local s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$1';"`
+  echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
+}
+database.has_records(){
+  local db=$1
+  local records=$(database.records $1)
+  if [ ! "$records" == '' ] && [ ! -z $records ]; then
+    echo 'yes'
+  else
+    echo 'no'  
+  fi
+}
+
 # site
 site(){
   local site_methods="+($(site.methods))"
