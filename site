@@ -75,10 +75,16 @@ ruby.print(){
   fi 
 }
 
-# database
-database.methods(){ echo "help|parse_yml|db_dev|db_tst|has_database|tables|has_tables|records|has_records"; }
-database.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(database.methods)]"; }
-database.parse_yml(){
+# databases
+dbs.methods(){ echo "help|parse_yml|current|has_database|tables|has_tables|records|has_records"; }
+dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(database.methods)]"; }
+dbs.init(){
+  unset MYSQL_DATABASE_DEV
+  unset MYSQL_DATABASE_TST
+  MYSQL_DATABASE_DEV=$(test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
+  MYSQL_DATABASE_TST=$(test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+}
+dbs.parse_yml(){
   local prefix=$2
   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
   sed -ne "s|^\($s\):|\1|" \
@@ -94,13 +100,24 @@ database.parse_yml(){
       }
   }'  
 }
-database.db_dev(){
-  test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}'
+dbs.current(){
+  local env=$1
+  if [ -z $env ]; then
+    env=$RAILS_ENV
+  fi
+  if [ "$env" == "development" ] || [ -z $env ]; then
+    if [ -z $MYSQL_DATABASE_DEV ]; then
+      MYSQL_DATABASE_DEV=$(test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
+    fi
+    echo $MYSQL_DATABASE_DEV
+  else
+    if [ -z $MYSQL_DATABASE_TST ]; then
+      MYSQL_DATABASE_TST=$(test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+    fi
+    echo $MYSQL_DATABASE_TST
+  fi   
 }
-database.db_tst(){
-  test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}'
-}
-database.has_database(){
+dbs.has_database(){
   local db=$1
   local res
   mysqlshow -uroot > /dev/null 2>&1
@@ -116,34 +133,42 @@ database.has_database(){
     fi
   fi
 }
-database.tables(){
+dbs.tables(){
   local db=$1
   local s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 
 }
-database.has_tables(){
+dbs.has_tables(){
   local db=$1
-  local tables=$(database.tables $db)
+  local tables=$(dbs.tables $db)
   if [ ! "$tables" == '0' ] && [ ! -z $tables ]; then
     echo 'yes'
   else
     echo 'no'  
   fi
 }
-database.records(){
+dbs.records(){
   local db=$1
   local s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$1';"`
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 }
-database.has_records(){
+dbs.has_records(){
   local db=$1
-  local records=$(database.records $1)
+  local records=$(dbs.records $1)
   if [ ! "$records" == '' ] && [ ! -z $records ]; then
     echo 'yes'
   else
     echo 'no'  
   fi
+}
+dbs.print(){
+  if test -f config/database.yml; then
+    dbs.init
+    echo -e "projects:"
+    
+  fi
+
 }
 
 # site
@@ -194,6 +219,7 @@ site.print(){
   printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
   printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain) 
   ruby.print
+  dbs.print
   projects.print
   printf ""  
 }
