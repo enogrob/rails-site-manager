@@ -77,7 +77,7 @@ ruby.print(){
 
 # databases
 dbs.methods(){ echo "help|parse_yml|current|has_database|tables|has_tables|records|has_records"; }
-dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(database.methods)]"; }
+dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(dbs.methods)]"; }
 dbs.init(){
   unset MYSQL_DATABASE_DEV
   unset MYSQL_DATABASE_TST
@@ -107,12 +107,12 @@ dbs.current(){
   fi
   if [ "$env" == "development" ] || [ -z $env ]; then
     if [ -z $MYSQL_DATABASE_DEV ]; then
-      MYSQL_DATABASE_DEV=$(test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
+      MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
     fi
     echo $MYSQL_DATABASE_DEV
   else
     if [ -z $MYSQL_DATABASE_TST ]; then
-      MYSQL_DATABASE_TST=$(test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+      MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
     fi
     echo $MYSQL_DATABASE_TST
   fi   
