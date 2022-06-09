@@ -191,9 +191,9 @@ dbs.print_db(){
   db=$(printf "%-${major}s" "${db}")
   if [ "$(dbs.has_database $db)" == 'yes' ]; then
     if [ $env == "development" ]; then
-      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.records $db)' '; ansi --white $(dbs.records $db)
+      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.tables $db)' '; ansi --white $(dbs.records $db)
     else
-      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.records $db)' '; ansi --white $(dbs.records $db)
+      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.tables $db)' '; ansi --white $(dbs.records $db)
     fi  
   else  
     ansi --no-newline "  "; ansi --red $db
