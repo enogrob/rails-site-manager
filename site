@@ -87,8 +87,8 @@ dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(dbs.metho
 dbs.init(){
   unset MYSQL_DATABASE_DEV
   unset MYSQL_DATABASE_TST
-  MYSQL_DATABASE_DEV=$(test -f config/database.yml && database.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
-  MYSQL_DATABASE_TST=$(test -f config/database.yml && database.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+  MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
+  MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
 }
 dbs.parse_yml(){
   local prefix=$2
