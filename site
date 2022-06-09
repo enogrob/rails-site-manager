@@ -202,6 +202,8 @@ dbs.print_db(){
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
     echo -e "dbs:"
+    dbs.print_db development
+    dbs.print_db test 
   fi  
 }
 
