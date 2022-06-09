@@ -61,7 +61,13 @@ ruby.print(){
           printf "\e[1;34m%s \e[0m%s\n" "  system    " "$ruby_version"
         fi
       else
-        printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" $(rvm current) 
+        ruby_version=$(rvm current)
+        if hash rails 2>/dev/null; then
+          rails_version="rails-$(rails --version | awk '{print $2}')"
+        else
+          rails_version=""
+        fi
+        printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version@$rails_version"
       fi
     else
       ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
