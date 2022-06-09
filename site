@@ -169,7 +169,7 @@ dbs.has_records(){
   fi
 }
 dbs.print(){
-  if [ "$(site.is_site)" == 'yes' ]; then
+  if test $(site.is_site) = 'yes'; then
     dbs.init
     echo -e "dbs:"
     
@@ -229,7 +229,7 @@ site.is_site(){
   fi
 }
 site.print(){
-  if ! test -f config/database.yml; then
+  if test $(site.is_site) = 'no'; then
     printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
   else
     printf "site: \e[4m\e[1;37m$(basename $PWD)\e[0m\e[0m\n" 
