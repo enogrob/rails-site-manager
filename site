@@ -169,9 +169,9 @@ dbs.has_records(){
   fi
 }
 dbs.print(){
-  if test -f config/database.yml; then
+  if [ "$(site.is_site)" == 'yes' ]; then
     dbs.init
-    echo -e "projects:"
+    echo -e "dbs:"
     
   fi
 
@@ -221,6 +221,13 @@ site(){
 }
 site.methods(){ echo "help|encora|domain|print|projects"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
+site.is_site(){
+  if test -f config/database.yml; then
+    echo 'yes'
+  else
+    echo 'no'  
+  fi
+}
 site.print(){
   if ! test -f config/database.yml; then
     printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
