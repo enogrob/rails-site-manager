@@ -170,11 +170,37 @@ dbs.has_records(){
 }
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
-    dbs.init
     echo -e "dbs:"
-    
+    local env=$1
+    local db
+    local dbs
+    local db_lens=()
+    db=$(dbs.current development)
+    db_lens+=(${#db})
+    db=$(dbs.current test)
+    db_lens+=(${#db})
+    IFS=$'\n'
+    major=$(echo "${db_lens[*]}" | sort -nr | head -n1)
+    unset IFS
+    if [ -z $env ]; then
+      env=$RAILS_ENV
+    fi
+    if [ "$env" == "development" ]; then
+      db=$(dbs.current development)
+    else  
+      db=$(dbs.current test)
+    fi
+    db=$(printf "%-${major}s" "${db}")
+    if [ "$(dbs.has_database $db)" == 'yes' ]; then
+      if [ $env == "development" ]; then
+        ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.records $db)' '; ansi --white $(dbs.records $db)
+      else
+        ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.records $db)' '; ansi --white $(dbs.records $db)
+      fi  
+    else  
+      ansi --no-newline "  "; ansi --red $db
+    fi
   fi
-
 }
 
 # site
