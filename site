@@ -225,7 +225,7 @@ site.print(){
   if ! test -f config/database.yml; then
     printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
   else
-    printf "site: \e[4m\e[1;37m$(basename $PWD))\e[0m\e[0m\n" 
+    printf "site: \e[4m\e[1;37m$(basename $PWD)\e[0m\e[0m\n" 
   fi  
   printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain) 
   ruby.print
