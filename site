@@ -90,7 +90,7 @@ dbs.init(){
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
 }
 dbs.methods(){ echo "init|methods|help|parse_yml|current|has_database|tables|has_tables|records|has_records|print_db|print"; }
-dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "database" "[$(dbs.methods)]"; }
+dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.parse_yml(){
   local prefix=$2
   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
