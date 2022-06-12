@@ -12,6 +12,7 @@
 export SITE_VERSION=v1.0.00
 export SITE_VERSION_DATE=2022.06.05
 export SITE_UPDATE_MESSAGE=""
+export SITES="clockwork_web"
 
 # git and ruby domains
 domain.git(){
@@ -208,6 +209,21 @@ dbs.print(){
   fi  
 }
 
+# services
+services.methods(){ echo "methods|help|start"; }
+services.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "services" "[$(services.methods)]"; }
+services.start(){
+  local site=$([[ ! -z "$s1" ]] && echo $1 ]] || echo $(site.name))
+  case $site in
+    clockwork_web)
+      foreman start -f Procfile.dev
+      ;;
+    *)
+      printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
+     ;;   
+  esac    
+}
+
 # site
 site(){
   local site_methods="+($(site.methods))"
@@ -227,6 +243,7 @@ site(){
       printf "\e[1;37m%s \e[0m%s\n" "site" "[$(projects.help)]"
       printf "::\n"  
       printf "\e[1;37m%s \e[0m%s\n" "site" "[$(dbs.help)]"
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(services.help)]"
       printf "::\n"  
       printf "\e[0;32m%s \e[4m%s\e[0m\e[0m\n" "homepage" "https://github.com/enogrob/rails-site-manager"
       printf "\n"
@@ -254,7 +271,14 @@ site(){
       ;;
   esac
 }
-site.methods(){ echo "methods|help|encora|domain|print|projects"; }
+site.methods(){ echo "methods|name|help|encora|domain|print|projects|services"; }
+site.name(){
+  if test $(site.is_site) = 'no'; then
+    echo "$USER@$(hostname)" 
+  else
+    echo "$(basename $PWD)" 
+  fi  
+}
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.is_site(){
   if test -f config/database.yml; then
@@ -264,11 +288,7 @@ site.is_site(){
   fi
 }
 site.print(){
-  if test $(site.is_site) = 'no'; then
-    printf "site: \e[4m\e[1;37m$USER@$(hostname)\e[0m\e[0m\n" 
-  else
-    printf "site: \e[4m\e[1;37m$(basename $PWD)\e[0m\e[0m\n" 
-  fi  
+  printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
   printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain.git) 
   domain.ruby.print
   dbs.print
