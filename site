@@ -210,13 +210,24 @@ dbs.print(){
 }
 
 # services
-services.methods(){ echo "methods|help|start"; }
+services.methods(){ echo "methods|help|start|stop"; }
 services.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "services" "[$(services.methods)]"; }
 services.start(){
   local site=$([[ ! -z "$s1" ]] && echo $1 ]] || echo $(site.name))
   case $site in
     clockwork_web)
       foreman start -f Procfile.dev
+      ;;
+    *)
+      printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
+     ;;   
+  esac    
+}
+services.stop(){
+  local site=$([[ ! -z "$s1" ]] && echo $1 ]] || echo $(site.name))
+  case $site in
+    clockwork_web)
+      pkill "foreman: master"
       ;;
     *)
       printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
