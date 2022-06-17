@@ -243,6 +243,122 @@ services.stop(){
      ;;   
   esac    
 }
+services.print_up(){
+  local service=$1
+  local major=$2
+  local pid=$3
+  case $service in
+    redis)
+      if [ ! -z $pid ]; then
+        service=$(printf "%-${major}s" "redis")
+        ansi --no-newline "  ${service} ";
+        ansi --no-newline --underline --green "localhost:6379";ansi " $pid"
+      fi
+      ;;
+    mysql)
+      if [ ! -z $pid ]; then
+        service=$(printf "%-${major}s" "mysql")
+        ansi --no-newline "  ${service} ";
+        ansi --no-newline --underline --green "localhost:3306";ansi " $pid"
+      fi  
+      ;;
+    assets)
+      if [ ! -z $pid ]; then
+        service=$(printf "%-${major}s" "assets")
+        ansi --no-newline "  ${service} ";
+        ansi --no-newline --underline --green "yarn.js watch ";ansi " $pid"
+      fi 
+      ;;
+    worker)
+      if [ ! -z $pid ]; then
+        service=$(printf "%-${major}s" "worker")
+        ansi --no-newline "  ${service} ";
+        ansi --no-newline --underline --green "http://localhost:3000/sidekiq";ansi " $pid"
+      fi 
+      ;;
+    web)
+      if [ ! -z $pid ]; then
+        service=$(printf "%-${major}s" "web")
+        ansi --no-newline "  ${service} ";
+        ansi --no-newline --underline --green-intense "http://localhost:3000";ansi " $pid"
+      fi  
+      ;;
+  esac
+}
+services.print_ups(){
+  local pid_redis=$(netstat -anv | grep LISTEN | grep "[.]6379" | awk '{print $9}' | uniq | head -1)
+  local pid_mysql=$(netstat -anv | grep LISTEN | grep "[.]3306" | awk '{print $9}' | uniq)
+  local pid_assets=$(ps | grep 'yarn.js watch' | grep -v grep | awk '{print $2}')
+  local pid_worker=$(ps | grep sidekiq | grep -v grep | awk '{print $2}')
+  local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
+  local services=(redis mysql assets worker web)
+  local service_name_lens=()
+  local major
+  for s in ${services[@]}
+  do
+    pid=pid_${s}
+    if ! test -z ${!pid}; then
+      service_name_lens+=(${#s})
+    fi
+  done
+  IFS=$'\n'
+  major=$(echo "${service_name_lens[*]}" | sort -nr | head -n1)
+  unset IFS
+  for s in ${services[@]}
+  do
+    pid=pid_${s}
+    if ! test -z ${!pid}; then
+      services.print_up $s $major ${!pid}
+    fi
+  done
+}
+services.print_down(){
+  local service=$1
+  local last=$2
+  local pid=$3
+  if [ -z $pid ]; then
+    if [ "$last" == "true" ]; then
+      ansi --red "$service";
+    else
+      ansi --no-newline --red "$service";
+    fi 
+  fi
+}
+services.print_downs(){
+  local pid_redis=$(netstat -anv | grep LISTEN | grep "[.]6379" | awk '{print $9}' | uniq | head -1)
+  local pid_mysql=$(netstat -anv | grep LISTEN | grep "[.]3306" | awk '{print $9}' | uniq)
+  local pid_assets=$(ps | grep 'yarn.js watch' | grep -v grep | awk '{print $2}')
+  local pid_worker=$(test -f tmp/pids/sidekiq.pid && cat "tmp/pids/sidekiq.pid")
+  local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
+  local services_not_running
+  local services=(redis mysql assets worker web)
+  for s in ${services[@]}
+  do
+    pid=pid_${s}
+    if test -z ${!pid}; then
+      services_not_running+=($s)
+    fi
+  done
+  if ! test -z $services_not_running; then
+    ansi --no-newline "  "
+    for s in ${services_not_running[@]}
+    do
+      if [ "$s" == "${services_not_running[${#services_not_running[@]}-1]}" ]; then
+        services.print_down $s true ${!pid}
+      else  
+        services.print_down $s false ${!pid}
+        ansi --no-newline ", "
+      fi
+    done
+  fi  
+}
+services.print(){
+  if test $(site.is_site) = 'yes'; then
+    ansi "services:"
+    services.print_ups
+    services.print_downs
+  fi
+}
 
 # site
 site(){
@@ -311,8 +427,11 @@ site.print(){
   printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
   printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain.git) 
   domain.ruby.print
+  services.print
   dbs.print
-  projects.print
+  if test $(site.is_site) = 'no'; then
+    projects.print
+  fi  
   printf ""  
 }
 site.version(){
