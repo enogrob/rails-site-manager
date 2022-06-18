@@ -138,6 +138,9 @@ dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"
 dbs.init(){
   unset MYSQL_DATABASE_DEV
   unset MYSQL_DATABASE_TST
+  DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
+  DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
+  DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
   site.function_names 'dbs'
@@ -160,8 +163,17 @@ dbs.parse_yml(){
 }
 dbs.console(){
   local db=$(dbs.current)
+  local dbs_location=$(dbs.location)
   if [ "$(dbs.has_database $db)" == 'yes' ]; then
     mycli -uroot $db
+    case $dbs_location in
+      local)
+        mycli -uroot $db
+        ;;
+      remote)
+        mycli -u$DB_REMOTE_USER -p$DB_REMOTE_PASS -h$DB_REMOTE_URL $db
+        ;;
+    esac  
   else   
     ansi --red-intense --no-newline $db;ansi --red " does not exist"
     ansi ""
@@ -186,23 +198,45 @@ dbs.current(){
 }
 dbs.has_database(){
   local db=$1
+  local dbs_location=$(dbs.location)
   local res
-  mysqlshow -uroot > /dev/null 2>&1
-  if [ $? -eq 1 ]; then 
-    ansi --no-newline --red-intense "==> "; ansi --white-intense "Database error"
-    echo ""
-  else  
-    res=`mysqlshow -uroot | grep -o $db`
-    if [ "$res" == $db ]; then
-      echo 'yes'
-    else
-      echo 'no'  
-    fi
-  fi
+  case $dbs_location in
+    local)
+      mysqlshow -uroot > /dev/null 2>&1
+      if [ $? -eq 1 ]; then 
+        ansi --no-newline --red-intense "==> "; ansi --white-intense "Database error"
+        echo ""
+      else  
+        res=`mysqlshow -uroot | grep -o $db`
+        if [ "$res" == $db ]; then
+          echo 'yes'
+        else
+          echo 'no'  
+        fi
+      fi
+      ;;
+    remote)
+      res=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SHOW DATABASES;" 2>/dev/null | grep -o $db`
+      if [ "$res" == $db ]; then
+        echo 'yes'
+      else
+        echo 'no'  
+      fi
+      ;;
+  esac  
 }
 dbs.tables(){
   local db=$1
-  local s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+  local dbs_location=$(dbs.location)
+  local s
+  case $dbs_location in
+    local)
+      s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+      ;;
+    remote)
+      s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      ;;
+  esac  
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 
 }
@@ -217,7 +251,16 @@ dbs.has_tables(){
 }
 dbs.records(){
   local db=$1
-  local s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$1';"`
+  local dbs_location=$(dbs.location)
+  local s
+  case $dbs_location in
+    local)
+      s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+      ;;
+    remote)
+      s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      ;;
+  esac  
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 }
 dbs.has_records(){
@@ -261,7 +304,7 @@ dbs.print_db(){
 }
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
-    if test $(dbs.location) == 'local' || test $(dbs.location) == 'multi'; then
+    if test $(dbs.location) == 'local' || test $(dbs.location) == 'remote'; then
       ansi "dbs:"
       dbs.print_db development
       dbs.print_db test 
