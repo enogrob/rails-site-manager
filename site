@@ -17,21 +17,7 @@ export SITES="clockwork_web"
 # rvm, env and git domains
 
 rvm.domain(){
-  local fname=${FUNCNAME[0]}
-  local method=$1
-  local methods="+($(${fname}.methods))"
-  if [ -z "$1" ]; then
-    ${fname}.print    
-  else    
-    case ${method} in
-      $methods)
-        ${fname}.${method} ${@:2}
-        ;;
-      *)
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
-        ;;  
-    esac
-  fi  
+  site.function_handler $*
 }
 rvm.domain.methods(){ echo "methods|help|init|print"; }
 rvm.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[$(rvm.domain.methods)]"; }
@@ -76,21 +62,7 @@ rvm.domain.print(){
 }
 
 env.domain(){
-  local fname=${FUNCNAME[0]}
-  local method=$1
-  local methods="+($(${fname}.methods))"
-  if [ -z "$1" ]; then
-    ${fname}.print    
-  else    
-    case ${method} in
-      $methods)
-        ${fname}.${method} ${@:2}
-        ;;
-      *)
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
-        ;;  
-    esac
-  fi  
+  site.function_handler $*
 }
 env.domain.methods(){ echo "methods|help|development|print|test"; }
 env.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "env.domain" "[$(env.domain.methods)]"; }
@@ -110,21 +82,7 @@ env.domain.print(){
 env.domain.test(){ export RAILS_ENV=test; }
 
 git.domain(){
-  local fname=${FUNCNAME[0]}
-  local method=$1
-  local methods="+($(${fname}.methods))"
-  if [ -z "$1" ]; then
-    ${fname}.print    
-  else    
-    case ${method} in
-      $methods)
-        ${fname}.${method} ${@:2}
-        ;;
-      *)
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
-        ;;  
-    esac
-  fi  
+  site.function_handler $*
 }
 git.domain.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail|print"; }
 git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
@@ -154,21 +112,7 @@ git.domain.print(){
 
 # projects
 projects(){
-  local fname=${FUNCNAME[0]}
-  local method=$1
-  local methods="+($(${fname}.methods))"
-  if [ -z "$1" ]; then
-    ${fname}.print    
-  else    
-    case ${method} in
-      $methods)
-        ${fname}.${method} ${@:2}
-        ;;
-      *)
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
-        ;;  
-    esac
-  fi  
+  site.function_handler $*
 }
 projects.methods(){ echo "methods|help|init|ls|print"; }
 projects.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "projects" "[$(projects.methods)]"; }
@@ -182,14 +126,17 @@ projects.print(){
 }
 
 # databases
+dbs(){
+  site.function_handler $*
+}
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print"; }
+dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   unset MYSQL_DATABASE_DEV
   unset MYSQL_DATABASE_TST
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
 }
-dbs.methods(){ echo "init|methods|help|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print"; }
-dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.parse_yml(){
   local prefix=$2
   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
@@ -382,7 +329,10 @@ dbs.domain.print(){
 }
 
 # services
-services.methods(){ echo "methods|help|start|stop"; }
+services(){
+  site.function_handler $*
+}
+services.methods(){ echo "methods|help|start|stop|print_up|print_ups|print_down|print_downs|print"; }
 services.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "services" "[$(services.methods)]"; }
 services.start(){
   local site=$([[ ! -z "$s1" ]] && echo $1 ]] || echo $(site.name))
@@ -540,52 +490,77 @@ services.print(){
 # site
 site(){
   local site_methods="+($(site.methods))"
-  local param_methods="+($(! test -z "$1" && $1.methods))"
-  case $1 in
-    --version|-v|v|version)
-      site.version
-      ;;
-    --help|-h|h|help)
-      printf "\e[1;37m%s \e[0m\n" "Crafted (c) 2021~22 by Encora - We are stronger together"
-      site.version
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(site.help)]" 
-      printf "\n"  
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(git.domain.help)]"
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(rvm.domain.help)]"
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(env.domain.help)]"
-      printf "\n"  
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(projects.help)]"
-      printf "::\n"  
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(dbs.help)]"
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(services.help)]"
-      printf "::\n"  
-      printf "\e[0;32m%s \e[4m%s\e[0m\e[0m\n" "homepage" "https://github.com/enogrob/rails-site-manager"
-      printf "\n"
-      ;;
-    $site_methods)
-      if [ -z "$2" ]; then
-        $1 
-      else  
-        case $2 in
-          $param_methods)
-            $1.$2 ${@:3}
-            ;;
-          *)
-            printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${2}"
-            ;;  
-        esac
-      fi  
-      ;;
-    *)
-      if [ -z "$1" ]; then
-        site.print
-      else   
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
-      fi  
-      ;;
-  esac
+  if [ -z "$1" ]; then
+    site.print
+  else   
+    case $1 in
+      --version|-v|v|version)
+        site.version
+        ;;
+      --help|-h|h|help)
+        printf "\e[1;37m%s \e[0m\n" "Crafted (c) 2021~22 by Encora - We are stronger together"
+        site.version
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(site.help)]" 
+        printf "\n"  
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(git.domain.help)]"
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(rvm.domain.help)]"
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(env.domain.help)]"
+        printf "\n"  
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(projects.help)]"
+        printf "::\n"  
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(dbs.help)]"
+        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(services.help)]"
+        printf "::\n"  
+        printf "\e[0;32m%s \e[4m%s\e[0m\e[0m\n" "homepage" "https://github.com/enogrob/rails-site-manager"
+        printf "\n"
+        ;;
+      $site_methods)
+        if [ -z "$2" ]; then
+          $1 
+        else  
+          local param_methods="+($(! test -z "$1" && $1.methods))"
+          case $2 in
+            $param_methods)
+              $1.$2 ${@:3}
+              ;;
+            *)
+              printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${2}"
+              ;;  
+          esac
+        fi  
+        ;;
+      *)
+        if [ -z "$1" ]; then
+          site.print
+        else   
+          printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${1}"
+        fi  
+        ;;
+    esac
+  fi
 }
-site.methods(){ echo "methods|help|rvm.domain|env.domain|git.domain|projects|dbs|services|name|help|is_site|print|version"; }
+site.methods(){ echo "methods|help|rvm.domain|env.domain|git.domain|projects|dbs|services|help|function_handler|name||is_site|print|version"; }
+site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
+site.function_handler(){
+  local fname=${FUNCNAME[1]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  echo $fname
+  echo $method
+  echo $methods
+  if [ -z "$method" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
+}
 site.name(){
   if test $(site.is_site) = 'no'; then
     echo "$USER@$(hostname)" 
@@ -593,7 +568,6 @@ site.name(){
     echo "$(basename $PWD)" 
   fi  
 }
-site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.is_site(){
   if test -f config/database.yml; then
     echo 'yes'
@@ -621,6 +595,7 @@ site.version(){
   printf "\n"
 }
 
+# site setup
 git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
 git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
 rvm.domain.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
