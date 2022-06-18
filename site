@@ -14,51 +14,7 @@ export SITE_VERSION_DATE=2022.06.05
 export SITE_UPDATE_MESSAGE=""
 export SITES="clockwork_web"
 
-# git, ruby and env domains
-git.domain(){
-  local fname=${FUNCNAME[0]}
-  local method=$1
-  local methods="+($(${fname}.methods))"
-  if [ -z "$1" ]; then
-    ${fname}.print    
-  else    
-    case ${method} in
-      $methods)
-        ${fname}.${method} ${@:2}
-        ;;
-      *)
-        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
-        ;;  
-    esac
-  fi  
-}
-git.domain.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail|print"; }
-git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
-git.domain.encora.init(){ encora_name=$1; encora_email=$2; }
-git.domain.encora(){
-  git config --global user.name "$encora_name"
-  git config --global user.email "$encora_email"
-}
-git.domain.gmail.init(){ gmail_name=$1; gmail_email=$2; }
-git.domain.gmail(){
-  git config --global user.name "$gmail_name"
-  git config --global user.email "$gmail_email"
-}
-git.domain.print(){
-  local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
-  printf "\e[1;34m%s \e[0m" "  git domain"
-  if test "$domain" == 'gmail'; then 
-    ansi --no-newline --green "gmail"
-  else
-    ansi --no-newline --black-intense "gmail"
-  fi
-  ansi --no-newline ", "
-  if [ "$domain" == 'encora' ]; then 
-    ansi --green "encora"
-  else
-    ansi --black-intense "encora"
-  fi
-}
+# rvm, env and git domains
 
 rvm.domain(){
   local fname=${FUNCNAME[0]}
@@ -155,18 +111,77 @@ env.domain.print(){
 }
 env.domain.test(){ export RAILS_ENV=test; }
 
-#projects
-projects(){
-  tl | sed 's/^/  /' 
+git.domain(){
+  local fname=${FUNCNAME[0]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  if [ -z "$1" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
 }
-projects.init(){ projects_print=$1; }
-projects.methods(){ echo "init|methods|help|ls|print"; }
+git.domain.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail|print"; }
+git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
+git.domain.encora.init(){ encora_name=$1; encora_email=$2; }
+git.domain.encora(){
+  git config --global user.name "$encora_name"
+  git config --global user.email "$encora_email"
+}
+git.domain.gmail.init(){ gmail_name=$1; gmail_email=$2; }
+git.domain.gmail(){
+  git config --global user.name "$gmail_name"
+  git config --global user.email "$gmail_email"
+}
+git.domain.print(){
+  local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
+  printf "\e[1;34m%s \e[0m" "  git domain"
+  if test "$domain" == 'gmail'; then 
+    ansi --no-newline --green "gmail"
+  else
+    ansi --no-newline --black-intense "gmail"
+  fi
+  ansi --no-newline ", "
+  if [ "$domain" == 'encora' ]; then 
+    ansi --green "encora"
+  else
+    ansi --black-intense "encora"
+  fi
+}
+
+# projects
+projects(){
+  local fname=${FUNCNAME[0]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  if [ -z "$1" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
+}
+projects.methods(){ echo "methods|help|init|ls|print"; }
 projects.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "projects" "[$(projects.methods)]"; }
+projects.init(){ projects_print=$1; }
 projects.ls(){ tdpl; }
 projects.print(){
   if [ "$projects_print" = "true" ]; then
     echo -e "projects:"
-    projects
+    tl | sed 's/^/  /' 
   fi
 }
 
@@ -570,7 +585,7 @@ site(){
       ;;
   esac
 }
-site.methods(){ echo "dbs|methods|rvm.domain|it.domain|env.domain|name|help|encora|domain|print|projects|services"; }
+site.methods(){ echo "methods|help|rvm.domain|env.domain|git.domain|projects|dbs|services|name|help|is_site|print|version"; }
 site.name(){
   if test $(site.is_site) = 'no'; then
     echo "$USER@$(hostname)" 
