@@ -14,7 +14,7 @@ export SITE_VERSION_DATE=2022.06.05
 export SITE_UPDATE_MESSAGE=""
 export SITES="clockwork_web"
 
-# git and ruby domains
+# git, ruby and env domains
 domain.git(){
   local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
   echo $domain
@@ -67,12 +67,30 @@ domain.ruby.print(){
     fi
   fi 
 }
-domain.rails(){
+domain.env(){
   if test "$RAILS_ENV" == 'development' || test -z "$RAILS_ENV"; then 
-    echo "development"
+    ansi --no-newline --green "development"
   else
-    echo "test"
-  fi  
+    ansi --no-newline --black-intese "development"
+  fi
+  ansi --no-newline ", "
+  if [ $RAILS_ENV == 'test' ]; then 
+    ansi --green "test"
+  else
+    ansi --black-intense "test"
+  fi
+}
+domain.env.methods(){ echo "methods|help|development|test"; }
+domain.env.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "domain.env" "[$(domain.env.methods)]"; }
+domain.env.development(){
+  export RAILS_ENV=development
+}
+domain.env.print(){
+  printf "\e[1;34m%s \e[0m" "  env domain"
+  domain.env
+}
+domain.env.test(){
+  export RAILS_ENV=test
 }
 
 #projects
@@ -227,20 +245,43 @@ dbs.print(){
 dbs.location(){
   local adapter=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_adapter | awk -F'"' '{print $2}')
   if test $adapter == 'mysql2'; then
-    echo 'local'
+    echo "local"
   else
-    echo 'remote'
+    echo "remote"
   fi
 }
 dbs.domain(){
   domain=$1
   if test -f config/database.yml; then
-    if test $domain == 'local' && test -f config/database.yml.local; then
-      cp config/database.yml.local config/database.yml
-    fi
-    if test $domain == 'remote' && test -f config/database.yml.remote; then
-      cp config/database.yml.remote config/database.yml
-    fi
+    case $1 in
+      local)
+        if test -f config/database.yml.local; then
+          cp config/database.yml.local config/database.yml
+        fi
+        ;;
+      remote)
+        if test -f config/database.yml.remote; then
+          cp config/database.yml.remote config/database.yml
+        fi
+        ;;
+      *)
+        dbs.domain.print
+        ;;
+    esac
+  fi
+}
+dbs.domain.print(){
+  printf "\e[1;34m%s \e[0m" "  dbs domain"
+  if test $(dbs.location) == 'local'; then
+    ansi --no-newline --green "local"
+  else
+    ansi --no-newline --black-intense "local"
+  fi
+  ansi --no-newline ", "
+  if test $(dbs.location) == 'remote'; then
+    ansi --green "remote"
+  else
+    ansi --black-intense "remote"
   fi
 }
 
@@ -467,8 +508,8 @@ site.print(){
   printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
   printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain.git) 
   domain.ruby.print
-  printf "\e[1;34m%s \e[0m%s\n" "  env domain" $(domain.rails)
-  printf "\e[1;34m%s \e[0m%s\n" "  dbs domain" $(dbs.location) 
+  domain.env.print
+  dbs.domain.print
   services.print
   if test $(dbs.location) == 'local'; then
     dbs.print
