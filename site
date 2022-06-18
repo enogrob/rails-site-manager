@@ -133,7 +133,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print"; }
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   unset MYSQL_DATABASE_DEV
@@ -141,6 +141,9 @@ dbs.init(){
   DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
   DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
   DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
+  PUPPET_USER=rnogueira
+  PUPPET_PASS=Puppet#22.
+  SKYLAB_URL=https://skylab.justworks.com/download_sanitized?name=clockwork_sanitized_no_excluded_tables.sql.gz
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
   site.function_names 'dbs'
@@ -378,6 +381,18 @@ dbs.domain.print(){
       ansi --black-intense "remote"
     fi
   fi
+}
+dbs.download(){
+   ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
+   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
+}
+dbs.import(){
+  ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
+  bundle exec rake db:drop
+  ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
+  bundle exec rake db:create
+  ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
+  zcat ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz | pv -cN zcat | mysql -u root clockwork_dev
 }
 
 # services
