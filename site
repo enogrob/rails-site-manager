@@ -133,7 +133,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import"; }
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   unset MYSQL_DATABASE_DEV
@@ -394,6 +394,33 @@ dbs.import(){
   ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
   zcat ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz | pv -cN zcat | mysql -u root clockwork_dev
 }
+dbs.dumps(){
+  local dump_active
+  local dumps
+  if test $(site.is_site) = 'yes'; then
+    ansi "dumps:"
+    if test -f tmp/devtools/${SITE}.dump_active; then
+      dump_active=$(cat tmp/devtools/${SITE}.dump_active)
+    fi  
+    IFS=$'\n'
+    dumps=(`ls *clockwork_sanitized_no_excluded_tables.sql.gz 2>/dev/null`)
+    dumps=($(printf "%s\n" ${dumps[@]} | sort -r )) 
+    if [ ! -z "$dumps" ]; then
+      for dump in ${dumps[*]}
+      do
+        ansi --no-newline "  "
+        if [ "$dump" == "$dump_active" ]; then
+          ansi --green $dump
+        else
+          ansi --red $dump  
+        fi
+      done
+    else  
+      ansi --red "  no dumps"
+    fi
+    unset IFS
+  fi
+}
 
 # services
 services(){
@@ -644,10 +671,11 @@ site.function_names(){
 }
 site.name(){
   if test $(site.is_site) = 'no'; then
-    echo "$USER@$(hostname)" 
+    SITE="$USER@$(hostname)" 
   else
-    echo "$(basename $PWD)" 
+    SITE="$(basename $PWD)" 
   fi  
+  echo $SITE
 }
 site.is_site(){
   if test -f config/database.yml; then
@@ -664,6 +692,7 @@ site.print(){
   git.domain.print
   services.print
   dbs.print
+  dbs.dumps
   projects.print 
   printf ""  
 }
