@@ -21,7 +21,7 @@ rvm.domain(){
 }
 rvm.domain.methods(){ echo "methods|help|init|print"; }
 rvm.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[$(rvm.domain.methods)]"; }
-rvm.domain.init(){ rvm_print=$1; }
+rvm.domain.init(){ rvm_print=$1;site.function_names 'rvm.domain'; }
 rvm.domain.print(){
   local ruby_version
   local rails_version
@@ -64,8 +64,9 @@ rvm.domain.print(){
 env.domain(){
   site.function_handler $*
 }
-env.domain.methods(){ echo "methods|help|development|print|test"; }
+env.domain.methods(){ echo "methods|help|init|development|print|test"; }
 env.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "env.domain" "[$(env.domain.methods)]"; }
+env.domain.init(){ site.function_names 'env.domain'; }
 env.domain.development(){ export RAILS_ENV=development; }
 env.domain.print(){
   printf "\e[1;34m%s \e[0m" "  env domain"
@@ -84,8 +85,9 @@ env.domain.test(){ export RAILS_ENV=test; }
 git.domain(){
   site.function_handler $*
 }
-git.domain.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail|print"; }
+git.domain.methods(){ echo "methods|help|init|encora.init|encora|gmail.init|gmail|print"; }
 git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
+git.domain.init(){ site.function_names 'git.domain'; }
 git.domain.encora.init(){ encora_name=$1; encora_email=$2; }
 git.domain.encora(){
   git config --global user.name "$encora_name"
@@ -116,13 +118,15 @@ projects(){
 }
 projects.methods(){ echo "methods|help|init|ls|print"; }
 projects.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "projects" "[$(projects.methods)]"; }
-projects.init(){ projects_print=$1; }
+projects.init(){ projects_print=$1;site.function_names 'projects'; }
 projects.ls(){ tdpl; }
 projects.print(){
-  if [ "$projects_print" = "true" ]; then
-    echo -e "projects:"
-    tl | sed 's/^/  /' 
-  fi
+  if test $(site.is_site) = 'no'; then
+    if [ "$projects_print" = "true" ]; then
+      echo -e "projects:"
+      tl | sed 's/^/  /' 
+    fi
+  fi  
 }
 
 # databases
@@ -136,6 +140,7 @@ dbs.init(){
   unset MYSQL_DATABASE_TST
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+  site.function_names 'dbs'
 }
 dbs.parse_yml(){
   local prefix=$2
@@ -256,9 +261,11 @@ dbs.print_db(){
 }
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
-    ansi "dbs:"
-    dbs.print_db development
-    dbs.print_db test 
+    if test $(dbs.location) == 'local' || test $(dbs.location) == 'multi'; then
+      ansi "dbs:"
+      dbs.print_db development
+      dbs.print_db test 
+    fi
   fi  
 }
 dbs.location(){
@@ -304,27 +311,29 @@ dbs.domain(){
   fi
 }
 dbs.domain.print(){
-  printf "\e[1;34m%s \e[0m" "  dbs domain"
-  if test $(dbs.location) == 'local'; then
-    ansi --no-newline --green "local"
-    ansi --no-newline " "
-    ansi --no-newline --black-intense "remote"
-    ansi --no-newline " "
-    ansi --black-intense "multi"
-  fi
-  if test $(dbs.location) == 'remote'; then
-    ansi --no-newline --green "remote"
-    ansi --no-newline " "
-    ansi --no-newline --black-intense "local"
-    ansi --no-newline " "
-    ansi --black-intense "multi"
-  fi
-  if test $(dbs.location) == 'multi'; then
-    ansi --green "multi"
-    ansi --no-newline " "
-    ansi --no-newline --black-intense "local"
-    ansi --no-newline " "
-    ansi --black-intense "remote"
+  if test $(site.is_site) = 'yes'; then
+    printf "\e[1;34m%s \e[0m" "  dbs domain"
+    if test $(dbs.location) == 'local'; then
+      ansi --no-newline --green "local"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "remote"
+      ansi --no-newline " "
+      ansi --black-intense "multi"
+    fi
+    if test $(dbs.location) == 'remote'; then
+      ansi --no-newline --green "remote"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "local"
+      ansi --no-newline " "
+      ansi --black-intense "multi"
+    fi
+    if test $(dbs.location) == 'multi'; then
+      ansi --green "multi"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "local"
+      ansi --no-newline " "
+      ansi --black-intense "remote"
+    fi
   fi
 }
 
@@ -332,8 +341,9 @@ dbs.domain.print(){
 services(){
   site.function_handler $*
 }
-services.methods(){ echo "methods|help|start|stop|print_up|print_ups|print_down|print_downs|print"; }
+services.methods(){ echo "methods|help|init|start|stop|print_up|print_ups|print_down|print_downs|print"; }
 services.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "services" "[$(services.methods)]"; }
+services.init(){ site.function_names 'services'; }
 services.start(){
   local site=$([[ ! -z "$s1" ]] && echo $1 ]] || echo $(site.name))
   case $site in
@@ -539,15 +549,12 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|rvm.domain|env.domain|git.domain|projects|dbs|services|help|function_handler|name||is_site|print|version"; }
+site.methods(){ echo "methods|help|function_handler|function_names|name||is_site|print|version|$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.function_handler(){
   local fname=${FUNCNAME[1]}
   local method=$1
   local methods="+($(${fname}.methods))"
-  echo $fname
-  echo $method
-  echo $methods
   if [ -z "$method" ]; then
     ${fname}.print    
   else    
@@ -560,6 +567,10 @@ site.function_handler(){
         ;;  
     esac
   fi  
+}
+site.function_names(){
+  local fname=$1
+  fnames="$fnames|$fname"
 }
 site.name(){
   if test $(site.is_site) = 'no'; then
@@ -582,12 +593,8 @@ site.print(){
   dbs.domain.print
   git.domain.print
   services.print
-  if test $(dbs.location) == 'local' || test $(dbs.location) == 'multi'; then
-    dbs.print
-  fi  
-  if test $(site.is_site) = 'no'; then
-    projects.print
-  fi  
+  dbs.print
+  projects.print 
   printf ""  
 }
 site.version(){
@@ -596,8 +603,13 @@ site.version(){
 }
 
 # site setup
+unset fnames
+env.domain.init
+rvm.domain.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
+git.domain.init
 git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
 git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-rvm.domain.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
 
 projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
+dbs.init
+services.init
