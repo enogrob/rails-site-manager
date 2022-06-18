@@ -99,14 +99,12 @@ env.domain.print(){
   printf "\e[1;34m%s \e[0m" "  env domain"
   if test "$RAILS_ENV" == 'development' || test -z "$RAILS_ENV"; then 
     ansi --no-newline --green "development"
-  else
-    ansi --no-newline --black-intense "development"
-  fi
-  ansi --no-newline ", "
-  if [ "$RAILS_ENV" == 'test' ]; then 
-    ansi --green "test"
-  else
+    ansi --no-newline " "
     ansi --black-intense "test"
+  else
+    ansi --no-newline --green "test"
+    ansi --no-newline " "
+    ansi --black-intense "development"
   fi
 }
 env.domain.test(){ export RAILS_ENV=test; }
@@ -145,14 +143,12 @@ git.domain.print(){
   printf "\e[1;34m%s \e[0m" "  git domain"
   if test "$domain" == 'gmail'; then 
     ansi --no-newline --green "gmail"
-  else
-    ansi --no-newline --black-intense "gmail"
-  fi
-  ansi --no-newline ", "
-  if [ "$domain" == 'encora' ]; then 
-    ansi --green "encora"
-  else
+    ansi --no-newline " "
     ansi --black-intense "encora"
+  else
+    ansi --no-newline --green "encora"
+    ansi --no-newline " "
+    ansi --black-intense "gmail"
   fi
 }
 
@@ -364,20 +360,24 @@ dbs.domain.print(){
   printf "\e[1;34m%s \e[0m" "  dbs domain"
   if test $(dbs.location) == 'local'; then
     ansi --no-newline --green "local"
-  else
-    ansi --no-newline --black-intense "local"
+    ansi --no-newline " "
+    ansi --no-newline --black-intense "remote"
+    ansi --no-newline " "
+    ansi --black-intense "multi"
   fi
-  ansi --no-newline ", "
   if test $(dbs.location) == 'remote'; then
     ansi --no-newline --green "remote"
-  else
-    ansi --no-newline --black-intense "remote"
+    ansi --no-newline " "
+    ansi --no-newline --black-intense "local"
+    ansi --no-newline " "
+    ansi --black-intense "multi"
   fi
-  ansi --no-newline ", "
   if test $(dbs.location) == 'multi'; then
     ansi --green "multi"
-  else
-    ansi --black-intense "multi"
+    ansi --no-newline " "
+    ansi --no-newline --black-intense "local"
+    ansi --no-newline " "
+    ansi --black-intense "remote"
   fi
 }
 
