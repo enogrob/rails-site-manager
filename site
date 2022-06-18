@@ -15,29 +15,75 @@ export SITE_UPDATE_MESSAGE=""
 export SITES="clockwork_web"
 
 # git, ruby and env domains
-domain.git(){
-  local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
-  echo $domain
+git.domain(){
+  local fname=${FUNCNAME[0]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  if [ -z "$1" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
 }
-domain.git.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail"; }
-domain.git.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "domain.git" "[$(domain.git.methods)]"; }
-domain.git.encora.init(){ encora_name=$1; encora_email=$2; }
-domain.git.encora(){
+git.domain.methods(){ echo "methods|help|encora.init|encora|gmail.init|gmail|print"; }
+git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
+git.domain.encora.init(){ encora_name=$1; encora_email=$2; }
+git.domain.encora(){
   git config --global user.name "$encora_name"
   git config --global user.email "$encora_email"
 }
-domain.git.gmail.init(){ gmail_name=$1; gmail_email=$2; }
-domain.git.gmail(){
+git.domain.gmail.init(){ gmail_name=$1; gmail_email=$2; }
+git.domain.gmail(){
   git config --global user.name "$gmail_name"
   git config --global user.email "$gmail_email"
 }
-domain.ruby.init(){ ruby_print=$1; }
-domain.ruby.methods(){ echo "init|methods|help|print"; }
-domain.ruby.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "domain.ruby" "[$(domain.ruby.methods)]"; }
-domain.ruby.print(){
+git.domain.print(){
+  local domain=$(echo $(git config user.email) | awk -F\@ '{print $2}' | awk -F\. '{print $1}')
+  printf "\e[1;34m%s \e[0m" "  git domain"
+  if test "$domain" == 'gmail'; then 
+    ansi --no-newline --green "gmail"
+  else
+    ansi --no-newline --black-intense "gmail"
+  fi
+  ansi --no-newline ", "
+  if [ "$domain" == 'encora' ]; then 
+    ansi --green "encora"
+  else
+    ansi --black-intense "encora"
+  fi
+}
+
+rvm.domain(){
+  local fname=${FUNCNAME[0]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  if [ -z "$1" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
+}
+rvm.domain.methods(){ echo "methods|help|init|print"; }
+rvm.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[$(rvm.domain.methods)]"; }
+rvm.domain.init(){ rvm_print=$1; }
+rvm.domain.print(){
   local ruby_version
   local rails_version
-  if [ "$ruby_print" = "true" ]; then 
+  if [ "$rvm_print" = "true" ]; then 
     if hash rvm 2>/dev/null; then
       if test $(rvm current) == 'system'; then
         ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
@@ -49,12 +95,17 @@ domain.ruby.print(){
         fi
       else
         ruby_version=$(rvm current)
-        if hash rails 2>/dev/null; then
-          rails_version="rails-$(rails --version | awk '{print $2}')"
+        rails --version | grep "Rails is not currently installed" > /dev/null
+        if [ $? -eq 0 ]; then
+         rails_version=""
         else
-          rails_version=""
+         rails_version="rails-$(rails --version | awk '{print $2}')"
         fi
-        printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version@$rails_version"
+        if test -z "$rails_version"; then
+          printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version"
+        else
+          printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version@$rails_version"
+        fi  
       fi
     else
       ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
@@ -67,31 +118,42 @@ domain.ruby.print(){
     fi
   fi 
 }
-domain.env(){
+
+env.domain(){
+  local fname=${FUNCNAME[0]}
+  local method=$1
+  local methods="+($(${fname}.methods))"
+  if [ -z "$1" ]; then
+    ${fname}.print    
+  else    
+    case ${method} in
+      $methods)
+        ${fname}.${method} ${@:2}
+        ;;
+      *)
+        printf " \e[0;31m%s \e[0m%s\n" "=>" "invalid parameter ${method}"
+        ;;  
+    esac
+  fi  
+}
+env.domain.methods(){ echo "methods|help|development|print|test"; }
+env.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "env.domain" "[$(env.domain.methods)]"; }
+env.domain.development(){ export RAILS_ENV=development; }
+env.domain.print(){
+  printf "\e[1;34m%s \e[0m" "  env domain"
   if test "$RAILS_ENV" == 'development' || test -z "$RAILS_ENV"; then 
     ansi --no-newline --green "development"
   else
-    ansi --no-newline --black-intese "development"
+    ansi --no-newline --black-intense "development"
   fi
   ansi --no-newline ", "
-  if [ $RAILS_ENV == 'test' ]; then 
+  if [ "$RAILS_ENV" == 'test' ]; then 
     ansi --green "test"
   else
     ansi --black-intense "test"
   fi
 }
-domain.env.methods(){ echo "methods|help|development|test"; }
-domain.env.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "domain.env" "[$(domain.env.methods)]"; }
-domain.env.development(){
-  export RAILS_ENV=development
-}
-domain.env.print(){
-  printf "\e[1;34m%s \e[0m" "  env domain"
-  domain.env
-}
-domain.env.test(){
-  export RAILS_ENV=test
-}
+env.domain.test(){ export RAILS_ENV=test; }
 
 #projects
 projects(){
@@ -207,7 +269,6 @@ dbs.has_records(){
 dbs.print_db(){
   local env=$1
   local db
-  local dbs
   local db_lens=()
   db=$(dbs.current development)
   db_lens+=(${#db})
@@ -243,25 +304,39 @@ dbs.print(){
   fi  
 }
 dbs.location(){
-  local adapter=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_adapter | awk -F'"' '{print $2}')
-  if test $adapter == 'mysql2'; then
+  local adapter=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep development_adapter | awk -F'"' '{print $2}'))
+  local is_multi=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep DB | head -1))
+  if test "$adapter" == 'mysql2'; then
     echo "local"
-  else
+  elif test -z "$is_multi"; then
     echo "remote"
+  else  
+    echo "multi"
   fi
 }
 dbs.domain(){
   domain=$1
   if test -f config/database.yml; then
-    case $1 in
+    case $domain in
       local)
         if test -f config/database.yml.local; then
           cp config/database.yml.local config/database.yml
+        else  
+          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.local does not exist"
         fi
         ;;
       remote)
         if test -f config/database.yml.remote; then
           cp config/database.yml.remote config/database.yml
+        else  
+          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
+        fi
+        ;;
+      multi)
+        if test -f config/database.yml.multi; then
+          cp config/database.yml.multi config/database.yml
+        else  
+          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.multi does not exist"
         fi
         ;;
       *)
@@ -279,9 +354,15 @@ dbs.domain.print(){
   fi
   ansi --no-newline ", "
   if test $(dbs.location) == 'remote'; then
-    ansi --green "remote"
+    ansi --no-newline --green "remote"
   else
-    ansi --black-intense "remote"
+    ansi --no-newline --black-intense "remote"
+  fi
+  ansi --no-newline ", "
+  if test $(dbs.location) == 'multi'; then
+    ansi --green "multi"
+  else
+    ansi --black-intense "multi"
   fi
 }
 
@@ -454,8 +535,9 @@ site(){
       site.version
       printf "\e[1;37m%s \e[0m%s\n" "site" "[$(site.help)]" 
       printf "\n"  
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(domain.git.help)]"
-      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(domain.ruby.help)]"
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(git.domain.help)]"
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(rvm.domain.help)]"
+      printf "\e[1;37m%s \e[0m%s\n" "site" "[$(env.domain.help)]"
       printf "\n"  
       printf "\e[1;37m%s \e[0m%s\n" "site" "[$(projects.help)]"
       printf "::\n"  
@@ -488,7 +570,7 @@ site(){
       ;;
   esac
 }
-site.methods(){ echo "dbs|methods|name|help|encora|domain|print|projects|services"; }
+site.methods(){ echo "dbs|methods|rvm.domain|it.domain|env.domain|name|help|encora|domain|print|projects|services"; }
 site.name(){
   if test $(site.is_site) = 'no'; then
     echo "$USER@$(hostname)" 
@@ -506,12 +588,12 @@ site.is_site(){
 }
 site.print(){
   printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
-  printf "\e[1;34m%s \e[0m%s\n" "  git domain" $(domain.git) 
-  domain.ruby.print
-  domain.env.print
+  rvm.domain.print
+  env.domain.print
   dbs.domain.print
+  git.domain.print
   services.print
-  if test $(dbs.location) == 'local'; then
+  if test $(dbs.location) == 'local' || test $(dbs.location) == 'multi'; then
     dbs.print
   fi  
   if test $(site.is_site) = 'no'; then
@@ -524,8 +606,8 @@ site.version(){
   printf "\n"
 }
 
-domain.git.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
-domain.git.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-domain.ruby.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
+git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
+git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
+rvm.domain.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
 
 projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
