@@ -43,7 +43,7 @@ In order to install `Site Manager`, it is required that the following has been i
 Crafted (c) 2021~22 by Encora - We are stronger together
 Site v1.0.00
 
-site [site    [methods|help|init|function_handler|function_names|name||is_site|print|version||env.domain|rvm.domain|git.domain|projects|dbs|services]]
+site    [methods|help|init|function_handler|function_names|name|is_site|print|version||env.domain|rvm.domain|git.domain|projects|dbs|services]
 
 site [git.domain  [methods|help|init|encora.init|encora|gmail.init|gmail|print]]
 site [rvm.domain  [methods|help|init|print]]
@@ -51,7 +51,7 @@ site [env.domain  [methods|help|init|development|print|test]]
 
 site [projects  [methods|help|init|ls|print]]
 ::
-site [dbs  [methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import]]
+site [dbs  [methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps]]
 site [services  [methods|help|init|start|stop|print_up|print_ups|print_down|print_downs|print]]
 ::
 homepage https://github.com/enogrob/rails-site-manager

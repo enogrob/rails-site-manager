@@ -595,7 +595,7 @@ site(){
       --help|-h|h|help)
         printf "\e[1;37m%s \e[0m\n" "Crafted (c) 2021~22 by Encora - We are stronger together"
         site.version
-        printf "\e[1;37m%s \e[0m%s\n" "site" "[$(site.help)]" 
+        site.help
         printf "\n"  
         printf "\e[1;37m%s \e[0m%s\n" "site" "[$(git.domain.help)]"
         printf "\e[1;37m%s \e[0m%s\n" "site" "[$(rvm.domain.help)]"
@@ -634,7 +634,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name||is_site|print|version|$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames
