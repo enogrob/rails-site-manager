@@ -10,28 +10,22 @@ Solution Integrator Experienced - Certified by Ericsson
 
 **About**
 
-This is in order to help the working CLI daily activities. It shows the `rvm` current status, besides the further info about `projects` sessions.
+This is in order to help the working CLI daily activities. It shows live relevant rails project information in the cli such as `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
 
 **Advantages:**
 
 * Development Flux and Environment seamlessly integrated.
-* Live **rvm** and **projects** information.
-* Supports for Mac.
-* Object-Oriented bash style
-* Supports [**fast ping**](https://fping.org).
+* Live `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
+* Support local and remote databases setups, remote import and download databases.
+* Support start/stop services at once with consolidated logs.
+* Better db consoles for `mysql`, `postgresql` and `redis`.
+
+Dependences:
+
+* Packages: ansi, iredis, mycli, pgcli, pv and wget.
+* Gem: foreman.
 
 See example of use below:
-
-**Note:** When appears "username" type `enter` and when appears "Password:" type `shift insert`$ site
-
-`site: robertonogueira@robertonogueira
-  git domain gmail
-  rvm domain ruby-2.7.5
-projects:
-  1 2022-05-29 job-justworks +job +rails @rails
-  2 2022-05-30 tutorial-turbo-rails +rails +tutorial @rails
-  3 2022-06-05 clockwork_web +project +rails @rails
-  4 2022-06-05 rails-site-manager +rails @bash @rails`
 
 ![](images/screenshot1.png)
 
