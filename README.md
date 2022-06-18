@@ -43,34 +43,42 @@ In order to install `Site Manager`, it is required that the following has been i
 Crafted (c) 2021~22 by Encora - We are stronger together
 Site v1.0.00
 
-site [site    [help|encora|domain|print|projects]]
-site [domain  [help|encora|gmail]]
+site [site    [methods|help|init|function_handler|function_names|name||is_site|print|version||env.domain|rvm.domain|git.domain|projects|dbs|services]]
 
-site [projects  [help|ls|print]]
+site [git.domain  [methods|help|init|encora.init|encora|gmail.init|gmail|print]]
+site [rvm.domain  [methods|help|init|print]]
+site [env.domain  [methods|help|init|development|print|test]]
+
+site [projects  [methods|help|init|ls|print]]
+::
+site [dbs  [methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import]]
+site [services  [methods|help|init|start|stop|print_up|print_ups|print_down|print_downs|print]]
 ::
 homepage https://github.com/enogrob/rails-site-manager
 ```
 
-**Installation**
+**Installation:**
 
-```shell
+```
 pushd /tmp
-git clone git@github.com:enogrob/project-today-manager.git
-source ./project-today-manager/today
-mv project-today-manager ~/Projects
-echo "test -f ~/Projects/project-today-manager/today && source ~/Projects/project-today-manager/today" >> ~/.bashrc
-popd 
-
-pushd ~/Projects
+# install site
+mkdir -p ~/Projects
+cd ~/Projects
 git clone git@github.com:enogrob/rails-site-manager.git
 echo "test -f ~/Projects/rails-site-manager/site && source ~/Projects/rails-site-manager/site" >> ~/.bashrc
 source ~/.bashrc
+# install site deps
+curl -OL git.io/ansi
+chmod 755 ansi
+sudo mv ansi /usr/local/bin/
+brew bundle Brewfile
+gem install foreman --no-document
 popd
 ```
 
 **Configuration**
 
-It is required that the initial values for `domains` are set in initialization section of the `site` script.
+It is required that the initial values for `domains` are set in initialization section of the `site` script e.g. `site.init`. Also the Puppet credentials has to be setup in the `~/.bashrc` .
 
 **Changes log**
 
@@ -78,5 +86,10 @@ It is required that the initial values for `domains` are set in initialization s
 
 **Refs:**
 
-* **[How To Use Linux Screen](https://linuxize.com/tags/screen)** - Screen or GNU Screen is a terminal multiplexer, you can start a screen session and processes running will continue to run.
-* **[fping](https://fping.org)** - Scriptable ping program for checking if multiple hosts are up..
+* ansi
+* foreman
+* iredis
+* mycli
+* pgcli
+* pv
+* wget
