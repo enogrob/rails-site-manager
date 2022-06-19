@@ -142,6 +142,7 @@ dbs.init(){
   DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
   DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
   SKYLAB_URL=https://skylab.justworks.com/download_sanitized?name=clockwork_sanitized_no_excluded_tables.sql.gz
+  SKYLAB=skylab.justworks.com
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
   site.function_names 'dbs'
@@ -172,7 +173,11 @@ dbs.console(){
         mycli -uroot $db
         ;;
       remote)
-        mycli -u$DB_REMOTE_USER -p$DB_REMOTE_PASS -h$DB_REMOTE_URL $db
+        if test $(site.vpn_connected) == 'yes'; then 
+          mycli -u$DB_REMOTE_USER -p$DB_REMOTE_PASS -h$DB_REMOTE_URL $db
+        else  
+          ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+        fi  
         ;;
     esac  
   else   
@@ -217,12 +222,16 @@ dbs.has_database(){
       fi
       ;;
     remote)
-      res=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SHOW DATABASES;" 2>/dev/null | grep -o $db`
-      if [ "$res" == $db ]; then
-        echo 'yes'
-      else
+      if test $(site.vpn_connected) == 'yes'; then 
+        res=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SHOW DATABASES;" 2>/dev/null | grep -o $db`
+        if [ "$res" == $db ]; then
+          echo 'yes'
+        else
+          echo 'no'  
+        fi
+      else  
         echo 'no'  
-      fi
+      fi  
       ;;
   esac  
 }
@@ -235,7 +244,11 @@ dbs.tables(){
       s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
       ;;
     remote)
-      s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      if test $(site.vpn_connected) == 'yes'; then 
+        s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      else  
+        s=""  
+      fi  
       ;;
   esac  
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
@@ -259,7 +272,11 @@ dbs.records(){
       s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
       ;;
     remote)
-      s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      if test $(site.vpn_connected) == 'yes'; then 
+        s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+      else  
+        s=""  
+      fi  
       ;;
   esac  
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
@@ -305,10 +322,19 @@ dbs.print_db(){
 }
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
-    if test $(dbs.location) == 'local' || test $(dbs.location) == 'remote'; then
+    if test $(dbs.location) == 'local'; then
       ansi "dbs:"
       dbs.print_db development
       dbs.print_db test 
+    elif  test $(dbs.location) == 'remote' && test $(site.vpn_connected) == 'yes'; then
+      ansi "dbs:"
+      dbs.print_db development
+      dbs.print_db test 
+    else  
+      ansi ""
+      printf " \e[0;31m%s \e[0m%s\n" "=>" "AWS VPN not connected!"
+      ansi ""
+      return 1
     fi
   fi  
 }
@@ -631,7 +657,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|vpn_connected|$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames
@@ -696,6 +722,15 @@ site.print(){
 site.version(){
   printf "\e[0;37m%s \e[0m%s\n" "Site" "$SITE_VERSION"
   printf "\n"
+}
+site.vpn_connected(){
+  local url=$SKYLAB
+  fping -C 1 $url &>/dev/null
+  if [ $? -ne 0 ]; then 
+    echo 'no'
+  else
+    echo 'yes'
+  fi
 }
 
 # site setup

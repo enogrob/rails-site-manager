@@ -22,7 +22,7 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 **Dependences:**
 
-* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Packages: [ansi](https://github.com/fidian/ansi), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
@@ -191,6 +191,7 @@ Based on: [research-obras-devtools](https://github.com/enogrob/research-obras-de
 
 * [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
 * [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
+* [fping](https://fping.org) - Scriptable ping program for checking if multiple hosts are up.
 * [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.
 * [mycli](https://www.mycli.net) - A Terminal Client for Mysql with AutoCompletion and Syntax Highligting.
 * [pgcli](https://www.pgcli.com/) - A Terminal Client for Postgresql with AutoCompletion and Syntax Highligting.

@@ -1,3 +1,4 @@
+fping
 iredis
 mycli
 pgcli
