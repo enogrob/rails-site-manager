@@ -27,30 +27,50 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 Se References below for further info.
 
-See example of use below:
-Here it is show a Download/Import a remote DB from `Skylab` and then setting up the use of the remote DB.
+![](images/screenshot1.png)
 
-**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. Also the CLI commands styles e.g. OO and usual bash can be used interchangeably.
+See example of use below:
+Here it is shown possible CLI commands according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
+
 
 ```
+$ site.methods
+methods|help|init|print
+
+$ rvm.domain.methods
+methods|help|init|development|print|test
+
 $ env.domain.methods
 methods|help|init|development|print|test
+
 $ git.domain.methods
 methods|help|init|encora.init|encora|gmail.init|gmail|print
 :
-$ env.domain development
-$ git.domain gmail
+$ services.methods
+methods|help|init|start|stop|print_up|print_ups|print_down|print_downs|print
 
 $ dbs.methods
-methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps
-:
+methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|import
+
+$ dumps.methods
+methods|help|init|activate|download|print
+```
+
+Here it is show a Download/Import a remote DB from Skylab, setting up the use of the remote DB and a connection to the underlying DB by using mycli console.
+**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
+
+```
+$ env.domain.development
+$ git.domain.gmail
+
 $ dbs.download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
+
 $ dbs.import
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
-$ dbs.domain remote
 
+$ dbs.domain remote
 $ dbs.console
 :
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
@@ -75,12 +95,11 @@ $ site services stop
 :
 ```
 
-![](images/screenshot1.png)
-
-
 **For further help:**
 
 ```shell
+$ site --help
+:
 Crafted (c) 2021~22 by Encora - We are stronger together
 Site v1.0.00
 
