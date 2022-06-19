@@ -163,6 +163,9 @@ test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rail
 ```
 
 Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` have to be placed in `config` directory in Rails project directory tree e.g. `clockwork_web`.
+
+**Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email.
+
 ```
 pushd ~/Projects/clockwork_web
 cp config/database.yml config/database.yml.local
