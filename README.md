@@ -135,7 +135,7 @@ Also add the source of the `Rails Site Manager` and the `Puppet Credentials` in 
 ```
 :
 # rails site manager
-export PUPPET_PASS=<user login>
+export PUPPET_USER=<user login>
 export PEPPET_PASS=<password>
 test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
 :
