@@ -161,6 +161,8 @@ source ~/.bashrc
 
 **Refs:**
 
+Based on: [research-obras-devtools](https://github.com/enogrob/research-obras-devtools) - Obras Development process, development utilities and support for Foreman, Docker and editors VsCode and Rubymine.
+
 * [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
 * [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
 * [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.
