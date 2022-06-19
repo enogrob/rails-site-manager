@@ -10,7 +10,7 @@ Solution Integrator Experienced - Certified by Ericsson
 
 **About**
 
-This is in order to help the working CLI daily activities. It shows live relevant rails project information in the cli such as `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
+This is in order to help the working CLI(Object Oriented Bash style) daily activities. It shows live relevant rails project information in the cli such as `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
 
 **Advantages:**
 
