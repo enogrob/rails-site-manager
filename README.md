@@ -33,21 +33,25 @@ Here it is show a Download/Import a remote DB from `Skylab` and then setting up 
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected.
 
 ```
-$ site env.domain development
-$ site git.domain gmail
+$ env.domain.methods
+methods|help|init|development|print|test
+$ git.domain.methods
+methods|help|init|encora.init|encora|gmail.init|gmail|print
+:
+$ env.domain development
+$ git.domain gmail
 
-$ site dbs download
+$ dbs.methods
+methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps
+:
+$ dbs.download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
-:
-
-$ site dbs import
+$ dbs.import
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
-:
+$ dbs.domain remote
 
-$ site dbs.domain remote
-
-$ site dbs console
+$ dbs.console
 :
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
 MySQL
@@ -58,14 +62,13 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ site services start
+$ services.start or site services start
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
 01:05:47 assets.1 | started with pid 60029
 01:05:47 assets.1 | yarn run v1.22.19
 :
-
 $ site
 :
 $ site services stop
