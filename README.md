@@ -57,7 +57,7 @@ $ dumps.methods
 methods|help|init|activate|download|print
 ```
 
-Here it is show a Download/Import a remote DB from Skylab, setting up the use of the remote DB and a connection to the underlying DB by using mycli console.
+Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
 
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
 
@@ -65,11 +65,11 @@ Here it is show a Download/Import a remote DB from Skylab, setting up the use of
 $ env.domain.development
 $ git.domain.gmail
 
-$ dbs.download
+$ dump.download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
 
-$ dbs.import
+$ dbs.import (or site dbs import)
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
 
 $ dbs.domain remote
@@ -84,7 +84,7 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ services.start or site services start
+$ services.start (or site services start)
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
