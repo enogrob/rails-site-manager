@@ -176,7 +176,7 @@ cp ~/Downloads/database.yml.multi config/
 popd
 ```
 
-Once all that is performed just source the `~/.bashrc`.
+Once all that is performed just source the `~/.bashrc`, and one is ready to go!
 ```
 source ~/.bashrc
 ```
