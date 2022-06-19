@@ -30,7 +30,7 @@ Se References below for further info.
 See example of use below:
 Here it is show a Download/Import a remote DB from `Skylab` and then setting up the use of the remote DB.
 
-**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected.
+**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. Also the CLI commands styles e.g. OO and usual bash can be used interchangeably.
 
 ```
 $ env.domain.methods
