@@ -72,7 +72,7 @@ nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
 $ dbs.import (or site dbs import)
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
 
-$ dbs.domain remote
+$ dbs.domain.remote
 $ dbs.console
 :
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
@@ -84,16 +84,18 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ services.start (or site services start)
+$ services.start (site services start)
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
 01:05:47 assets.1 | started with pid 60029
 01:05:47 assets.1 | yarn run v1.22.19
 :
+
+# from another terminal
 $ site
 :
-$ site services stop
+$ services.stop
 :
 ```
 
