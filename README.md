@@ -183,7 +183,7 @@ source ~/.bashrc
 
 **Changes log**
 
-* **1.0.01** First release.
+* **1.0.00** First release.
 
 **Refs:**
 
