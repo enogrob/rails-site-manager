@@ -19,8 +19,13 @@ rvm.domain(){
 }
 rvm.domain.methods(){ echo "methods|help|init|print"; }
 rvm.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[$(rvm.domain.methods)]"; }
-rvm.domain.init(){ rvm_print=$1;site.function_names 'rvm.domain'; }
-rvm.domain.print(){
+rvm.domain.init(){ 
+  rvm_print=$1
+  site.function_names 'rvm.domain'
+  rvm.domain.update
+}
+rvm.domain.print(){ printf "\e[1;34m%s \e[0m%s\n" "  $DOMAIN_RVM" "$DOMAIN_RUBY"; }
+rvm.domain.update(){
   local ruby_version
   local rails_version
   if [ "$rvm_print" = "true" ]; then 
@@ -29,9 +34,11 @@ rvm.domain.print(){
         ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
         if hash rails 2>/dev/null; then
           rails_version="rails-$(rails --version | awk '{print $2}')"
-          printf "\e[1;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
+          DOMAIN_RVM="system"
+          DOMAIN_RUBY="$ruby_version@$rails_version"
         else
-          printf "\e[1;34m%s \e[0m%s\n" "  system    " "$ruby_version"
+          DOMAIN_RVM="system"
+          DOMAIN_RUBY="$ruby_version"
         fi
       else
         ruby_version=$(rvm current)
@@ -42,18 +49,22 @@ rvm.domain.print(){
          rails_version="rails-$(rails --version | awk '{print $2}')"
         fi
         if test -z "$rails_version"; then
-          printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version"
+          DOMAIN_RVM="rvm domain"
+          DOMAIN_RUBY="$ruby_version"
         else
-          printf "\e[1;34m%s \e[0m%s\n" "  rvm domain" "$ruby_version@$rails_version"
+          DOMAIN_RVM="rvm domain"
+          DOMAIN_RUBY="$ruby_version@$rails_version"
         fi  
       fi
     else
       ruby_version="ruby-$(ruby --version | awk '{print $2}' | cut -d 'p' -f 1)"
       if hash rails 2>/dev/null; then
         rails_version="rails-$(rails --version | awk '{print $2}')"
-        printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version@$rails_version"
+        DOMAIN_RVM="system"
+        DOMAIN_RUBY="$ruby_version@$rails_version"
       else
-        printf "\e[0;34m%s \e[0m%s\n" "  system    " "$ruby_version"
+        DOMAIN_RVM="system"
+        DOMAIN_RUBY="$ruby_version"
       fi
     fi
   fi 
@@ -136,16 +147,32 @@ dbs(){
 dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
-  unset MYSQL_DATABASE_DEV
-  unset MYSQL_DATABASE_TST
-  DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
-  DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
-  DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
+  local dbs_location=$(dbs.location)
+  local db
+  site.function_names 'dbs'
   SKYLAB_URL=https://skylab.justworks.com/download_sanitized?name=clockwork_sanitized_no_excluded_tables.sql.gz
   SKYLAB=skylab.justworks.com
+  unset MYSQL_DATABASE_DEV
+  unset MYSQL_DATABASE_TST
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
-  site.function_names 'dbs'
+  db=$(dbs.current development)
+  DB_TABLES_DEV=$(dbs.tables $db)
+  DB_RECORDS_DEV=$(dbs.records $db)
+  db=$(dbs.current test)
+  DB_TABLES_TST=$(dbs.tables $db)
+  DB_RECORDS_TST=$(dbs.records $db)
+  case $dbs_location in
+    local)
+      ;;
+    remote)
+      DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
+      DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
+      DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
+      ;;
+    multi)
+      ;;
+  esac
 }
 dbs.parse_yml(){
   local prefix=$2
@@ -312,9 +339,9 @@ dbs.print_db(){
   db=$(printf "%-${major}s" "${db}")
   if [ "$(dbs.has_database $db)" == 'yes' ]; then
     if [ $env == "development" ]; then
-      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.tables $db)' '; ansi --white $(dbs.records $db)
+      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $DB_TABLES_DEV' '; ansi --white $DB_RECORDS_DEV
     else
-      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $(dbs.tables $db)' '; ansi --white $(dbs.records $db)
+      ansi --no-newline "  "; ansi --no-newline --green $db' '; ansi --white --no-newline $DB_TABLES_TST' '; ansi --white $DB_RECORDS_TST
     fi  
   else  
     ansi --no-newline "  "; ansi --red $db
@@ -356,6 +383,7 @@ dbs.domain(){
       local)
         if test -f config/database.yml.local; then
           cp config/database.yml.local config/database.yml
+          dbs.init
         else  
           printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.local does not exist"
         fi
@@ -363,6 +391,7 @@ dbs.domain(){
       remote)
         if test -f config/database.yml.remote; then
           cp config/database.yml.remote config/database.yml
+          dbs.init
         else  
           printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
         fi
@@ -370,6 +399,7 @@ dbs.domain(){
       multi)
         if test -f config/database.yml.multi; then
           cp config/database.yml.multi config/database.yml
+          dbs.init
         else  
           printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.multi does not exist"
         fi
@@ -657,7 +687,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|vpn_connected|$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|vpn_connected$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames

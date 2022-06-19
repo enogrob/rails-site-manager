@@ -36,7 +36,7 @@ Here it is shown possible CLI commands according to the previous picture followi
 
 ```
 $ site.methods
-methods|help|init|print
+methods|help|init|name|print|version|vpn_connected
 
 $ rvm.domain.methods
 methods|help|init|development|print|test
@@ -65,6 +65,9 @@ Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the us
 $ env.domain development
 $ git.domain gmail
 
+$ site.vpn_connected
+yes
+
 $ dbs.download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
@@ -84,7 +87,7 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ services.start (site services start)
+$ services.start (site services stop)
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
@@ -95,7 +98,7 @@ $ services.start (site services start)
 # from another terminal
 $ site
 :
-$ services.stop
+$ services.stop (or site services stop)
 :
 ```
 
