@@ -62,17 +62,17 @@ Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the us
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
 
 ```
-$ env.domain.development
-$ git.domain.gmail
+$ env.domain development
+$ git.domain gmail
 
-$ dump.download
+$ dbs.download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
 
 $ dbs.import (or site dbs import)
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
 
-$ dbs.domain.remote
+$ dbs.domain remote
 $ dbs.console
 :
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
