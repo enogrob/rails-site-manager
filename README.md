@@ -22,7 +22,7 @@ This is in order to help the working CLI daily activities. It shows live relevan
 
 **Dependences:**
 
-* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv][http://www.ivarch.com/programs/pv.shtml] and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
