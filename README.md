@@ -29,7 +29,8 @@ Se References below for further info.
 
 ![](images/screenshot1.png)
 
-See example of use below:
+**Example of uses:**
+
 Here it is shown possible CLI commands according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
 
 
@@ -57,6 +58,7 @@ methods|help|init|activate|download|print
 ```
 
 Here it is show a Download/Import a remote DB from Skylab, setting up the use of the remote DB and a connection to the underlying DB by using mycli console.
+
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
 
 ```
