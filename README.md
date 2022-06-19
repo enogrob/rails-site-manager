@@ -184,6 +184,14 @@ Once all that is performed just source the `~/.bashrc`, and one is ready to go!
 source ~/.bashrc
 ```
 
+**Note:** This underlying project is still under development so mind __to keep its local repo updated__.
+
+```
+pushd ~/Projects/rails-site-manager
+git pull
+popd
+```
+
 **Changes log**
 
 * **1.0.00** First release.
