@@ -20,10 +20,12 @@ This is in order to help the working CLI daily activities. It shows live relevan
 * Support start/stop services at once with consolidated logs.
 * Better db consoles for `mysql`, `postgresql` and `redis`.
 
-Dependences:
+**Dependences:**
 
-* Packages: ansi, iredis, mycli, pgcli, pv and wget.
-* Gem: foreman.
+* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv][] and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Gem: [foreman](https://github.com/ddollar/foreman).
+
+Se References below for further info.
 
 See example of use below:
 
@@ -85,10 +87,10 @@ It is required that the initial values for `domains` are set in initialization s
 
 **Refs:**
 
-* ansi
-* foreman
-* iredis
-* mycli
-* pgcli
-* pv
-* wget
+* [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
+* [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
+* [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.
+* [mycli](https://www.mycli.net) - A Terminal Client for Mysql with AutoCompletion and Syntax Highligting.
+* [pgcli](https://www.pgcli.com/) - A Terminal Client for Postgresql with AutoCompletion and Syntax Highligting.
+* [pv](http://www.ivarch.com/programs/pv.shtml) - Pipe Viewer.
+* [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) - The noninteractive downloading utility.
