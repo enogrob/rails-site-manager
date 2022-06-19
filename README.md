@@ -22,22 +22,47 @@ This is in order to help the working CLI daily activities. It shows live relevan
 
 **Dependences:**
 
-* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv][] and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Packages: [ansi](https://github.com/fidian/ansi), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv][http://www.ivarch.com/programs/pv.shtml] and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
 
 See example of use below:
+Here it is show a Download/Import a remote DB from `Skylab` and then setting up the use of the remote DB.
+
+**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected.
+
+```
+$ site env.domain development
+$ site git.domain gmail
+
+$ site dbs download
+==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
+nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
+:
+
+$ site dbs import
+==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
+:
+
+$ site dbs.domain remote
+$ site 
+:
+
+$ site dbs console
+:
+Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
+MySQL
+mycli 1.25.0
+Home: http://mycli.net
+Bug tracker: https://github.com/dbcli/mycli/issues
+Thanks to the contributor - Klaus Wünschel
+MySQL root@(none):clockwork_dev>
+:
+```
 
 ![](images/screenshot1.png)
 
-## Requirements and Tips
-
-In order to install `Site Manager`, it is required that the following has been installed already:
-
-* [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-* [project-today-manager](https://github.com/enogrob/project-today-manager)
-* [project-tag-manager](https://github.com/enogrob/project-tag-manager)
 
 **For further help:**
 
@@ -64,10 +89,9 @@ homepage https://github.com/enogrob/rails-site-manager
 pushd /tmp
 # install site
 mkdir -p ~/Projects
-cd ~/Projects
 git clone git@github.com:enogrob/rails-site-manager.git
-echo "test -f ~/Projects/rails-site-manager/site && source ~/Projects/rails-site-manager/site" >> ~/.bashrc
-source ~/.bashrc
+mv rails-site-manager ~/Projects
+
 # install site deps
 curl -OL git.io/ansi
 chmod 755 ansi
@@ -79,7 +103,43 @@ popd
 
 **Configuration**
 
-It is required that the initial values for `domains` are set in initialization section of the `site` script e.g. `site.init`. Also the Puppet credentials has to be setup in the `~/.bashrc` .
+It is required that the some initial values are set in initialization section of the `site` script e.g. `site.init`. e.g.
+```shell
+:
+site.init(){
+  unset fnames
+  :
+  git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
+  git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
+  projects.init false
+  :
+}
+:
+```
+
+Also add the source of the `Rails Site Manager` and the `Puppet Credentials` in the `~/.bashrc` .
+```
+:
+# rails site manager
+export PUPPET_PASS=<user login>
+export PEPPET_PASS=<password>
+test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
+:
+```
+
+Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` have to be placed in `config` directory in Rails project directory tree e.g. `clockwork_web`.
+```
+pushd ~/Projects/clockwork_web
+cp config/database.yml config/database.yml.local
+cp ~/Downloads/database.yml.remote config/
+cp ~/Downloads/database.yml.multi config/
+popd
+```
+
+Once all that is performed just source the `~/.bashrc`.
+```
+source ~/.bashrc
+```
 
 **Changes log**
 
