@@ -165,12 +165,10 @@ dbs.init(){
   case $dbs_location in
     local)
       ;;
-    remote)
+    remote|multi)
       DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
       DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
       DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
-      ;;
-    multi)
       ;;
   esac
 }
