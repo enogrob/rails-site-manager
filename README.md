@@ -46,8 +46,6 @@ $ site dbs import
 :
 
 $ site dbs.domain remote
-$ site 
-:
 
 $ site dbs console
 :
@@ -57,7 +55,20 @@ mycli 1.25.0
 Home: http://mycli.net
 Bug tracker: https://github.com/dbcli/mycli/issues
 Thanks to the contributor - Klaus Wünschel
-MySQL root@(none):clockwork_dev>
+MySQL root@(none):clockwork_dev> exit
+:
+
+$ site services start
+:
+1:05:47 web.1    | started with pid 60027
+01:05:47 worker.1 | started with pid 60028
+01:05:47 assets.1 | started with pid 60029
+01:05:47 assets.1 | yarn run v1.22.19
+:
+
+$ site
+:
+$ site services stop
 :
 ```
 
