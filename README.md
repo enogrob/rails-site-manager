@@ -105,12 +105,10 @@ $ services.stop (or site services stop)
 **For further help:**
 
 ```shell
-$ site --help
-:
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.00
+Site v1.0.01
 
-site    [print|version]
+site    [print|version|vpn_connected]
 ::
 rvm.domain    [print]
 env.domain    [print|development|test]
@@ -119,6 +117,8 @@ git.domain    [print|encora|gmail]
 ::
 dbs    [print|download|import|dumps]
 services    [print|start|stop]
+services.mysql    [console|list|restart|start|stop]
+services.redis    [console|list|restart|start|stop]
 ::
 homepage https://github.com/enogrob/rails-site-manager
 ```
