@@ -48,13 +48,16 @@ $ git.domain.methods
 methods|help|init|encora.init|encora|gmail.init|gmail|print
 :
 $ services.methods
-methods|help|init|start|stop|print_up|print_ups|print_down|print_downs|print
+methods|help|init|start|stop|print
+
+$ services.mysql.methods
+methods|help|init|console|list|restart|start|stop
+
+$ services.redis.methods
+methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
-methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|import
-
-$ dumps.methods
-methods|help|init|activate|download|print
+methods|help|init|console|current|domain|domain.print|download|import|location|print
 ```
 
 Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
@@ -87,7 +90,7 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ services.start (site services stop)
+$ services.start (or site services start)
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
