@@ -31,7 +31,7 @@ Se References below for further info.
 
 **Example of uses:**
 
-Here it is shown possible CLI commands according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
+Here it is shown possible CLI commands(relevant ones) according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
 
 
 ```
