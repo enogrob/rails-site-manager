@@ -34,7 +34,7 @@ Se References below for further info.
 Here it is shown possible CLI commands(relevant ones) according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
 
 
-```
+```shell
 $ site.methods
 methods|help|init|name|print|version|vpn_connected
 
@@ -64,7 +64,7 @@ Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the us
 
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
 
-```
+```shell
 $ env.domain development
 $ git.domain gmail
 
@@ -128,7 +128,7 @@ homepage https://github.com/enogrob/rails-site-manager
 
 **Installation:**
 
-```
+```shell
 # install site and its deps
 pushd /tmp
 mkdir -p ~/Projects
@@ -165,7 +165,7 @@ site.init(){
 ```
 
 Also add the source of the `Rails Site Manager` and the `Puppet Credentials` in the `~/.bashrc` .
-```
+```shell
 :
 # rails site manager
 export PUPPET_USER=<user login>
@@ -178,7 +178,7 @@ Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` ha
 
 **Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email.
 
-```
+```shell
 pushd ~/Projects/clockwork_web
 cp config/database.yml config/database.yml.local
 cp ~/Downloads/database.yml.remote config/
@@ -187,13 +187,13 @@ popd
 ```
 
 Once all that is performed just source the `~/.bashrc`, and one is ready to go!
-```
+```shell
 source ~/.bashrc
 ```
 
 **Note:** This underlying project is still under development so mind __to keep its local repo updated__.
 
-```
+```shell
 pushd ~/Projects/rails-site-manager
 git pull
 popd
@@ -201,7 +201,7 @@ popd
 
 or just
 
-```
+```shell
 site.update
 ```
 
