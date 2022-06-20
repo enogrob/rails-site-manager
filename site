@@ -741,6 +741,7 @@ site.init(){
   git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
   projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
   dbs.init
+  dbs.domain.init
   services.init
   services.mysql.init
   services.redis.init
