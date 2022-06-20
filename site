@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.02
+export SITE_VERSION=v1.0.03
 export SITE_VERSION_DATE=2022.06.20
-export SITE_UPDATE_MESSAGE="Improve 'dbs.domain.print' and corrected 'dbs.init'."
+export SITE_UPDATE_MESSAGE="Refactor 'dbs.domain' as a really namespace."
 
 # rvm domain
 rvm.domain(){
@@ -92,6 +92,77 @@ env.domain.print(){
 }
 env.domain.test(){ export RAILS_ENV=test; }
 
+# dbs domain
+dbs.domain(){
+  site.function_handler $*
+}
+dbs.domain.methods(){ echo "methods|help|init|local|multi|print|remote"; }
+dbs.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs.domain" "[$(dbs.domain.methods)]"; }
+dbs.domain.init(){ site.function_names 'dbs.domain'; }
+dbs.domain.local(){
+  if test -f config/database.yml && test -f config/database.yml.local; then
+    cp config/database.yml.local config/database.yml
+    dbs.init
+  else  
+    printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.local does not exist"
+  fi
+}
+dbs.domain.multi(){
+  if test -f config/database.yml && test -f config/database.yml.multi; then
+    cp config/database.yml.multi config/database.yml
+    dbs.init
+  else  
+    printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.multi does not exist"
+  fi
+}
+dbs.domain.print(){
+  local adapter=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep development_adapter | awk -F'"' '{print $2}'))
+  local is_multi=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep DB | head -1))
+  if test "$adapter" == 'mysql2'; then
+    echo "local"
+  elif test -z "$is_multi"; then
+    echo "remote"
+  else  
+    echo "multi"
+  fi
+}
+dbs.domain.printf(){
+  if test $(site.is_site) = 'yes'; then
+    printf "\e[1;34m%s \e[0m" "  dbs domain"
+    if test $(dbs.domain) == 'local'; then
+      ansi --no-newline --green "local"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "remote"
+      ansi --no-newline " "
+      ansi --black-intense "multi"
+    fi
+    if test $(dbs.domain) == 'remote'; then
+      ansi --no-newline --green "remote"
+      ansi --no-newline " "
+      ansi --no-newline --underline --green "$DB_REMOTE_HOST"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "local"
+      ansi --no-newline " "
+      ansi --black-intense "multi"
+    fi
+    if test $(dbs.domain) == 'multi'; then
+      ansi --green "multi"
+      ansi --no-newline " "
+      ansi --no-newline --black-intense "local"
+      ansi --no-newline " "
+      ansi --black-intense "remote"
+    fi
+  fi
+}
+dbs.domain.remote(){
+  if test -f config/database.yml && test -f config/database.yml.remote; then
+    cp config/database.yml.remote config/database.yml
+    dbs.init
+  else  
+    printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
+  fi
+}
+
 # git domains
 git.domain(){
   site.function_handler $*
@@ -147,7 +218,7 @@ dbs(){
 dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
-  local dbs_location=$(dbs.location)
+  local dbs_location=$(dbs.domain)
   local db
   site.function_names 'dbs'
   SKYLAB_URL=https://skylab.justworks.com/download_sanitized?name=clockwork_sanitized_no_excluded_tables.sql.gz
@@ -193,7 +264,7 @@ dbs.parse_yml(){
 }
 dbs.console(){
   local db=$(dbs.current)
-  local dbs_location=$(dbs.location)
+  local dbs_location=$(dbs.domain)
   if [ "$(dbs.has_database $db)" == 'yes' ]; then
     mycli -uroot $db
     case $dbs_location in
@@ -232,7 +303,7 @@ dbs.current(){
 }
 dbs.has_database(){
   local db=$1
-  local dbs_location=$(dbs.location)
+  local dbs_location=$(dbs.domain)
   local res
   case $dbs_location in
     local)
@@ -265,7 +336,7 @@ dbs.has_database(){
 }
 dbs.tables(){
   local db=$1
-  local dbs_location=$(dbs.location)
+  local dbs_location=$(dbs.domain)
   local s
   case $dbs_location in
     local)
@@ -293,7 +364,7 @@ dbs.has_tables(){
 }
 dbs.records(){
   local db=$1
-  local dbs_location=$(dbs.location)
+  local dbs_location=$(dbs.domain)
   local s
   case $dbs_location in
     local)
@@ -350,11 +421,11 @@ dbs.print_db(){
 }
 dbs.print(){
   if test $(site.is_site) = 'yes'; then
-    if test $(dbs.location) == 'local'; then
+    if test $(dbs.domain) == 'local'; then
       ansi "dbs:"
       dbs.print_db development
       dbs.print_db test 
-    elif  test $(dbs.location) == 'remote' && test $(site.vpn_connected) == 'yes'; then
+    elif  test $(dbs.domain) == 'remote' && test $(site.vpn_connected) == 'yes'; then
       ansi "dbs:"
       dbs.print_db development
       dbs.print_db test 
@@ -366,79 +437,8 @@ dbs.print(){
     fi
   fi  
 }
-dbs.location(){
-  local adapter=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep development_adapter | awk -F'"' '{print $2}'))
-  local is_multi=$(test -f config/database.yml && echo $(dbs.parse_yml config/database.yml | grep DB | head -1))
-  if test "$adapter" == 'mysql2'; then
-    echo "local"
-  elif test -z "$is_multi"; then
-    echo "remote"
-  else  
-    echo "multi"
-  fi
-}
-dbs.domain(){
-  domain=$1
-  if test -f config/database.yml; then
-    case $domain in
-      local)
-        if test -f config/database.yml.local; then
-          cp config/database.yml.local config/database.yml
-          dbs.init
-        else  
-          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.local does not exist"
-        fi
-        ;;
-      remote)
-        if test -f config/database.yml.remote; then
-          cp config/database.yml.remote config/database.yml
-          dbs.init
-        else  
-          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
-        fi
-        ;;
-      multi)
-        if test -f config/database.yml.multi; then
-          cp config/database.yml.multi config/database.yml
-          dbs.init
-        else  
-          printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.multi does not exist"
-        fi
-        ;;
-      *)
-        dbs.domain.print
-        ;;
-    esac
-  fi
-}
-dbs.domain.print(){
-  if test $(site.is_site) = 'yes'; then
-    printf "\e[1;34m%s \e[0m" "  dbs domain"
-    if test $(dbs.location) == 'local'; then
-      ansi --no-newline --green "local"
-      ansi --no-newline " "
-      ansi --no-newline --black-intense "remote"
-      ansi --no-newline " "
-      ansi --black-intense "multi"
-    fi
-    if test $(dbs.location) == 'remote'; then
-      ansi --no-newline --green "remote"
-      ansi --no-newline " "
-      ansi --no-newline --underline --green "$DB_REMOTE_HOST"
-      ansi --no-newline " "
-      ansi --no-newline --black-intense "local"
-      ansi --no-newline " "
-      ansi --black-intense "multi"
-    fi
-    if test $(dbs.location) == 'multi'; then
-      ansi --green "multi"
-      ansi --no-newline " "
-      ansi --no-newline --black-intense "local"
-      ansi --no-newline " "
-      ansi --black-intense "remote"
-    fi
-  fi
-}
+
+
 dbs.download(){
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
@@ -572,7 +572,7 @@ services.print_ups(){
   local pid_assets=$(ps | grep 'yarn.js watch' | grep -v grep | awk '{print $2}')
   local pid_worker=$(ps | grep sidekiq | grep -v grep | awk '{print $2}')
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
-  if test $(dbs.location) == 'local'; then
+  if test $(dbs.domain) == 'local'; then
     local services=(redis mysql postgresql assets worker web)
   else
     local services=(redis postgresql assets worker web)
@@ -614,7 +614,7 @@ services.print_downs(){
   local pid_worker=$(ps | grep sidekiq | grep -v grep | awk '{print $2}')
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
   local services_not_running
-  if test $(dbs.location) == 'local'; then
+  if test $(dbs.domain) == 'local'; then
     local services=(redis mysql postgresql assets worker web)
   else
     local services=(redis postgresql assets worker web)
@@ -706,7 +706,7 @@ site(){
         ;;
       $site_methods)
         if [ -z "$2" ]; then
-          $1 
+          site.$1 
         else  
           local param_methods="+($(! test -z "$1" && $1.methods))"
           case $2 in
@@ -785,7 +785,7 @@ site.print(){
   printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
   rvm.domain.print
   env.domain.print
-  dbs.domain.print
+  dbs.domain.printf
   git.domain.print
   services.print
   dbs.print

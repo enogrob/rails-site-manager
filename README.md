@@ -44,6 +44,9 @@ methods|help|init|development|print|test
 $ env.domain.methods
 methods|help|init|development|print|test
 
+$ dbs.domain.methods
+methods|help|init|local|multi|print|remote
+
 $ git.domain.methods
 methods|help|init|encora.init|encora|gmail.init|gmail|print
 :
@@ -65,21 +68,21 @@ Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the us
 **Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
 
 ```shell
-$ env.domain development
-$ git.domain gmail
+$ site env.domain development
+$ site git.domain gmail
 
-$ site.vpn_connected
+$ site vpn_connected
 yes
 
-$ dbs.download
+$ site dbs download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
 
-$ dbs.import (or site dbs import)
+$ site dbs import 
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
 
-$ dbs.domain remote
-$ dbs.console
+$ site dbs.domain remote
+$ site dbs console
 :
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
 MySQL
@@ -90,7 +93,7 @@ Thanks to the contributor - Klaus Wünschel
 MySQL root@(none):clockwork_dev> exit
 :
 
-$ services.start (or site services start)
+$ site services start 
 :
 1:05:47 web.1    | started with pid 60027
 01:05:47 worker.1 | started with pid 60028
@@ -101,7 +104,7 @@ $ services.start (or site services start)
 # from another terminal
 $ site
 :
-$ services.stop (or site services stop)
+$ site services stop 
 :
 ```
 
@@ -207,6 +210,7 @@ site.update
 
 **Changes log**
 
+* **1.0.03** Refactor `dbs.domain` as a really namespace.
 * **1.0.02** Improve `dbs.domain.print` and corrected `dbs.init`.
 * **1.0.01** Implement methods `console|list|restart|start|stop` for  `services.msql` and `services.redis`.
 * **1.0.00** First release.
