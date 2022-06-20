@@ -215,7 +215,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|location|domain|domain.print|download|import|dumps"; }
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)

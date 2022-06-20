@@ -60,7 +60,7 @@ $ services.redis.methods
 methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
-methods|help|init|console|current|domain|domain.print|download|import|location|print
+methods|help|init|console|current|download|import|print
 ```
 
 Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
