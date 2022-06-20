@@ -129,8 +129,8 @@ homepage https://github.com/enogrob/rails-site-manager
 **Installation:**
 
 ```
+# install site and its deps
 pushd /tmp
-# install site and brew bundle
 mkdir -p ~/Projects
 git clone git@github.com:enogrob/rails-site-manager.git
 cd rails-site-manager
@@ -143,6 +143,7 @@ sudo mv ansi /usr/local/bin/
 mv rails-site-manager ~/Projects
 popd
 
+# install foreman gem
 pushd ~/Projects/clockwork_web
 gem install foreman --no-document
 popd
