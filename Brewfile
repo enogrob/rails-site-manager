@@ -1,8 +1,8 @@
-ack
-cowsay
-fping
-iredis
-mycli
-pgcli
-pv
-wget
+brew "ack"
+brew "cowsay"
+brew "fping"
+brew "iredis"
+brew "mycli"
+brew "pgcli"
+brew "pv"
+brew "wget"

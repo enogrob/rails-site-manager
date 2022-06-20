@@ -130,16 +130,20 @@ homepage https://github.com/enogrob/rails-site-manager
 
 ```
 pushd /tmp
-# install site
+# install site and brew bundle
 mkdir -p ~/Projects
 git clone git@github.com:enogrob/rails-site-manager.git
-mv rails-site-manager ~/Projects
-
-# install site deps
+cd rails-site-manager
+brew bundle
+cd ..
+# install ansi
 curl -OL git.io/ansi
 chmod 755 ansi
 sudo mv ansi /usr/local/bin/
-brew bundle Brewfile
+mv rails-site-manager ~/Projects
+popd
+
+pushd ~/Projects/clockwork_web
 gem install foreman --no-document
 popd
 ```
