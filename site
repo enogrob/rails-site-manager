@@ -156,6 +156,16 @@ dbs.init(){
   unset MYSQL_DATABASE_TST
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
+  case $dbs_location in
+    local)
+      ;;
+    remote|multi)
+      DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
+      DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
+      DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
+      DB_REMOTE_HOST='https://sanitized-db.justworks.com'
+      ;;
+  esac
   if test $(site.is_site) = 'yes'; then
     db=$(dbs.current development)
     DB_TABLES_DEV=$(dbs.tables $db)
@@ -164,15 +174,6 @@ dbs.init(){
     DB_TABLES_TST=$(dbs.tables $db)
     DB_RECORDS_TST=$(dbs.records $db)
   fi  
-  case $dbs_location in
-    local)
-      ;;
-    remote|multi)
-      DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
-      DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
-      DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
-      ;;
-  esac
 }
 dbs.parse_yml(){
   local prefix=$2
@@ -422,6 +423,8 @@ dbs.domain.print(){
     fi
     if test $(dbs.location) == 'remote'; then
       ansi --no-newline --green "remote"
+      ansi --no-newline " "
+      ansi --no-newline --underline --green "$DB_REMOTE_HOST"
       ansi --no-newline " "
       ansi --no-newline --black-intense "local"
       ansi --no-newline " "
