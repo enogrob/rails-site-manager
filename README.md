@@ -22,7 +22,7 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 **Dependences:**
 
-* Packages: [ansi](https://github.com/fidian/ansi), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
@@ -194,13 +194,16 @@ popd
 
 **Changes log**
 
+* **1.0.01** Implement methods `console|lis|restart|start|stop` for  `services.msql` and `services.redis`.
 * **1.0.00** First release.
 
 **Refs:**
 
 Based on: [research-obras-devtools](https://github.com/enogrob/research-obras-devtools) - Obras Development process, development utilities and support for Foreman, Docker and editors VsCode and Rubymine.
 
+* [ack](https://beyondgrep.com) - grep-like source code search tool.
 * [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
+* [cowsay](https://github.com/tnalpgge/rank-amateur-cowsay) - Configurable talking characters in ASCII art.
 * [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
 * [fping](https://fping.org) - Scriptable ping program for checking if multiple hosts are up.
 * [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.

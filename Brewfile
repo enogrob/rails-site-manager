@@ -1,3 +1,5 @@
+ack
+cowsay
 fping
 iredis
 mycli
