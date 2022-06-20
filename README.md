@@ -134,7 +134,7 @@ pushd /tmp
 mkdir -p ~/Projects
 git clone git@github.com:enogrob/rails-site-manager.git
 cd rails-site-manager
-brew bundle
+brew bundle --no-upgrade
 cd ..
 curl -OL git.io/ansi
 chmod 755 ansi
