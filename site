@@ -156,12 +156,14 @@ dbs.init(){
   unset MYSQL_DATABASE_TST
   MYSQL_DATABASE_DEV=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_database | awk -F'"' '{print $2}')
   MYSQL_DATABASE_TST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep test_database | awk -F'"' '{print $2}' | awk -F'<' '{print $1}')
-  db=$(dbs.current development)
-  DB_TABLES_DEV=$(dbs.tables $db)
-  DB_RECORDS_DEV=$(dbs.records $db)
-  db=$(dbs.current test)
-  DB_TABLES_TST=$(dbs.tables $db)
-  DB_RECORDS_TST=$(dbs.records $db)
+  if test $(site.is_site) = 'yes'; then
+    db=$(dbs.current development)
+    DB_TABLES_DEV=$(dbs.tables $db)
+    DB_RECORDS_DEV=$(dbs.records $db)
+    db=$(dbs.current test)
+    DB_TABLES_TST=$(dbs.tables $db)
+    DB_RECORDS_TST=$(dbs.records $db)
+  fi  
   case $dbs_location in
     local)
       ;;
@@ -766,7 +768,7 @@ site.name(){
     SITE="$USER@$(hostname)" 
   else
     SITE="$(basename $PWD)" 
-  fi  
+  fi   
   echo $SITE
 }
 site.is_site(){
