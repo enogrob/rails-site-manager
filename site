@@ -4,7 +4,7 @@
 ## File     : site
 ## Project  : rails-site-manager
 ## Reference: bash
-## Depends  : ansi, foreman, iredis, mycli, pgcli, pv and wget
+## Depends  : ack, ansi, cowsay, foreman, fping, iredis, mycli, pgcli, pv and wget
 ## Purpose  : Help to manage ordinary things.
 
 # set -x
