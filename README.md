@@ -192,6 +192,12 @@ git pull
 popd
 ```
 
+or just
+
+```
+site.update
+```
+
 **Changes log**
 
 * **1.0.01** Implement methods `console|lis|restart|start|stop` for  `services.msql` and `services.redis`.
