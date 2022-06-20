@@ -207,7 +207,7 @@ site.update
 
 **Changes log**
 
-* **1.0.01** Implement methods `console|lis|restart|start|stop` for  `services.msql` and `services.redis`.
+* **1.0.01** Implement methods `console|list|restart|start|stop` for  `services.msql` and `services.redis`.
 * **1.0.00** First release.
 
 **Refs:**
