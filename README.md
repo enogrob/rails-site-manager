@@ -136,7 +136,6 @@ git clone git@github.com:enogrob/rails-site-manager.git
 cd rails-site-manager
 brew bundle
 cd ..
-# install ansi
 curl -OL git.io/ansi
 chmod 755 ansi
 sudo mv ansi /usr/local/bin/
