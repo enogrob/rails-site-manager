@@ -85,7 +85,7 @@ $ site dbs import
 ==> Dropping  databases
 ==> Creating  databases
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
-19.1GiB 5:50:39 [ 918KiB/s] [=====...======] 99% ETA 0:02:22
+19.2GiB 6:31:39 [ 858KiB/s] [============..===========] 100%
 
 $ site dbs.domain remote
 $ site dbs console
