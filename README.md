@@ -79,7 +79,7 @@ yes
 
 $ site dbs download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
-nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
+100%[============..==========>]  18.46G  4.62MB/s    in 62m 51
 
 $ site dbs import 
 ==> Dropping  databases

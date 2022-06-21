@@ -857,10 +857,11 @@ site.print(){
   env.domain.print
   dbs.domain.printf
   git.domain.print
+  vpn.print
   services.print
   dbs.print
   dbs.dumps
-  projects.print 
+  projects.print
   printf ""  
 }
 site.update(){
