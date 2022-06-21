@@ -441,7 +441,7 @@ dbs.print(){
 
 dbs.download(){
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
-   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
+   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
 }
 dbs.import(){
   if test $(dbs.has_database $(dbs.current)) == 'yes'; then
