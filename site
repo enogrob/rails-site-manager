@@ -738,7 +738,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|version|vpn_connected$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|update|version|vpn_connected$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames

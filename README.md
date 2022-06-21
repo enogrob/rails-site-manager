@@ -208,7 +208,7 @@ popd
 or just
 
 ```shell
-site.update
+site update
 ```
 
 **Changes log**
