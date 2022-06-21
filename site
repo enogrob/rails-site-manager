@@ -455,6 +455,7 @@ dbs.import(){
     ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
     env.domain.development
     pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current)
+    unset DISABLE_DATABASE_ENVIRONMENT_CHECK
   else  
     printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
   fi
