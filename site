@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.03
-export SITE_VERSION_DATE=2022.06.20
-export SITE_UPDATE_MESSAGE="Refactor 'dbs.domain' as a really namespace."
+export SITE_VERSION=v1.0.04
+export SITE_VERSION_DATE=2022.06.21
+export SITE_UPDATE_MESSAGE="Refactor 'dbs.import'"
 
 # rvm domain
 rvm.domain(){
@@ -444,12 +444,20 @@ dbs.download(){
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
 }
 dbs.import(){
-  ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
-  bundle exec rake db:drop
-  ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
-  bundle exec rake db:create
-  ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
-  zcat ~/Downloads/clockwork_sanitized_no_excluded_tables.sql.gz | pv -cN zcat | mysql -u root clockwork_dev
+  if test $(dbs.has_database $(dbs.current)) == 'yes'; then
+    export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
+    bundle exec rake db:drop &> /dev/null
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
+    bundle exec rake db:create &> /dev/null
+  fi
+  if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
+    env.domain.development
+    pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current)
+  else  
+    printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
+  fi
 }
 dbs.dumps(){
   local dump_active

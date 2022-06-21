@@ -79,7 +79,10 @@ $ site dbs download
 nloads/clockwork_sa   0%[                   ]  42.40M  4.70MB/s
 
 $ site dbs import 
+==> Dropping  databases
+==> Creating  databases
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
+23.1MiB 0:00:19 [ 987KiB/s] [>             ]  0% ETA 4:29:19
 
 $ site dbs.domain remote
 $ site dbs console
@@ -210,6 +213,7 @@ site.update
 
 **Changes log**
 
+* **1.0.04** Refactor `dbs.import`.
 * **1.0.03** Refactor `dbs.domain` as a really namespace.
 * **1.0.02** Improve `dbs.domain.print` and corrected `dbs.init`.
 * **1.0.01** Implement methods `console|list|restart|start|stop` for  `services.msql` and `services.redis`.
