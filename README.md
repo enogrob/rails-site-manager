@@ -36,7 +36,10 @@ Here it is shown possible CLI commands(relevant ones) according to the previous 
 
 ```shell
 $ site.methods
-methods|help|init|name|print|version|vpn_connected
+methods|help|init|name|print|version
+
+$ vpn.methods
+methods|help|init|connected|loop|print
 
 $ rvm.domain.methods
 methods|help|init|development|print|test
@@ -71,7 +74,7 @@ Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the us
 $ site env.domain development
 $ site git.domain gmail
 
-$ site vpn_connected
+$ site vpn connected
 yes
 
 $ site dbs download
@@ -82,7 +85,7 @@ $ site dbs import
 ==> Dropping  databases
 ==> Creating  databases
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
-23.1MiB 0:00:19 [ 987KiB/s] [>             ]  0% ETA 4:29:19
+19.1GiB 5:50:39 [ 918KiB/s] [=====...======] 99% ETA 0:02:22
 
 $ site dbs.domain remote
 $ site dbs console
@@ -117,8 +120,9 @@ $ site services stop
 Crafted (c) 2021~22 by Encora - We are stronger together
 Site v1.0.01
 
-site    [print|version|vpn_connected]
-::
+site    [print|version]
+vpn     [methods|help|init|connected|loop|print]
+:
 rvm.domain    [print]
 env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
@@ -213,6 +217,7 @@ site update
 
 **Changes log**
 
+* **1.0.05** Add `vpn` namespace.
 * **1.0.04** Refactor `dbs.import`.
 * **1.0.03** Refactor `dbs.domain` as a really namespace.
 * **1.0.02** Improve `dbs.domain.print` and corrected `dbs.init`.
