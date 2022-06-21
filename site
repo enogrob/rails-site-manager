@@ -758,6 +758,7 @@ site(){
         printf "\e[1;37m%s \e[0m\n" "Crafted (c) 2021~22 by Encora - We are stronger together"
         site.version
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[print|version]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "vpn" "[connected|loop|print]"
         printf "::\n"  
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[print]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "env.domain" "[print|development|test]"
