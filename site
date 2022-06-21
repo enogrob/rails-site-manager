@@ -718,7 +718,6 @@ vpn.connected(){
   fi
 }
 vpn.loop(){
-  old_tty=$(stty --save)
   while true ; do
     if read -t 0; then 
         read -n 1 char
@@ -733,7 +732,6 @@ vpn.loop(){
       sleep 1
     fi       
   done
-  stty $old_tty
 }
 vpn.print(){
   if [ "$vpn_print" = "true" ]; then
