@@ -518,13 +518,11 @@ dbs.dumps(){
 }
 
 dbs.create(){
-  local refresh=$(test -z $2 && echo "[daily]")
+  local refresh=$(test -z $1 && echo "daily")
   if test $(site.is_site) == 'yes'; then
-    if test $(dbs.domain) == 'remote'; then
-      script/docker-sanitized-db/created-db -e $justworks_email -r $refresh
-    else
-      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
-    fi
+    script/docker-sanitized-db/create-db -e $justworks_email -r $refresh
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
   fi
 }
 dbs.refresh(){
