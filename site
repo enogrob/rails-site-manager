@@ -169,12 +169,17 @@ dbs.domain.printf(){
   fi
 }
 dbs.domain.remote(){
-  if test -f config/database.yml && test -f config/database.yml.remote; then
-    cp config/database.yml.remote config/database.yml
-    dbs.init
-  else  
-    printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
-  fi
+  if test $(vpn.connected) == 'yes'; then 
+    if test -f config/database.yml && test -f config/database.yml.remote; then
+      cp config/database.yml.remote config/database.yml
+      dbs.init
+    else  
+      printf " \e[0;31m%s \e[0m%s\n" "=>" "config/database.yml.remote does not exist"
+    fi
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+    ansi ""
+  fi 
 }
 
 # git domains
@@ -279,7 +284,6 @@ dbs.console(){
   local db=$(dbs.current)
   local dbs_location=$(dbs.domain)
   if [ "$(dbs.has_database $db)" == 'yes' ]; then
-    mycli -uroot $db
     case $dbs_location in
       local)
         mycli -uroot $db
@@ -461,9 +465,9 @@ dbs.import(){
     export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
     ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
     bundle exec rake db:drop &> /dev/null
-    ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
-    bundle exec rake db:create &> /dev/null
-  fi
+  fi;  
+  ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
+  bundle exec rake db:create &> /dev/null
   if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
     ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
     env.domain.development
@@ -676,7 +680,7 @@ services.mysql.list(){
   | ack --flush --passthru 'started' --color --color-match=green \
   | ack --flush --passthru 'none' --color --color-match=red 
 }
-services.mysql.restart(){ brew services restart mysql5.7; }
+services.mysql.restart(){ brew services restart mysql@5.7; }
 services.mysql.start(){ brew services start mysql@5.7; }
 services.mysql.stop(){ brew services stop mysql@5.7; }
 
@@ -735,11 +739,10 @@ vpn.loop(){
 }
 vpn.print(){
   if [ "$vpn_print" = "true" ]; then
-    echo -e "vpn:"
     if test $(vpn.connected) == 'yes'; then
-      ansi --green "  AWS VPN Client"
+      ansi --green "AWS VPN Client"
     else
-      ansi --red "  AWS VPN Client"
+      ansi --red "AWS VPN Client"
     fi  
   fi
 }
@@ -853,12 +856,11 @@ site.is_site(){
   fi
 }
 site.print(){
-  printf "site: \e[4m\e[1;37m$(site.name)\e[0m\e[0m\n" 
+  printf "site: \e[1;37m%s \e[0m - \e[0;36m%s\e[0m\n" "$(site.name)" "$(vpn.print)"
   rvm.domain.print
   env.domain.print
   dbs.domain.printf
   git.domain.print
-  vpn.print
   services.print
   dbs.print
   dbs.dumps
