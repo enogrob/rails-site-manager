@@ -51,7 +51,7 @@ $ dbs.domain.methods
 methods|help|init|local|multi|print|remote
 
 $ git.domain.methods
-methods|help|init|encora.init|encora|gmail.init|gmail|print
+methods|help|init|justworks.init|justworks|gmail.init|gmail|print
 :
 $ services.methods
 methods|help|init|start|stop|print
@@ -63,7 +63,7 @@ $ services.redis.methods
 methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
-methods|help|init|console|current|download|import|print
+methods|help|init|console|current|download|import|dumps|create|refresh|delete|print
 ```
 
 Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
@@ -118,18 +118,19 @@ $ site services stop
 **For further help:**
 
 ```shell
+$ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.01
+Site v1.0.06
 
 site    [print|version]
-vpn     [methods|help|init|connected|loop|print]
-:
+vpn    [connected|loop|print]
+::
 rvm.domain    [print]
 env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
-git.domain    [print|encora|gmail]
+git.domain    [print|justworks|gmail]
 ::
-dbs    [print|download|import|dumps]
+dbs    [print|download|import|dumps|create|refresh|delete]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
@@ -167,9 +168,8 @@ It is required that the some initial values are set in initialization section of
 site.init(){
   unset fnames
   :
-  git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
+  git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
   git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-  projects.init false
   :
 }
 :
@@ -218,6 +218,7 @@ site update
 
 **Changes log**
 
+* **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
 * **1.0.05** Add `vpn` namespace.
 * **1.0.04** Refactor `dbs.import`.
 * **1.0.03** Refactor `dbs.domain` as a really namespace.

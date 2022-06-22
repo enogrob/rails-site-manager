@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.05
-export SITE_VERSION_DATE=2022.06.21
-export SITE_UPDATE_MESSAGE="Add 'vpn' namespace"
+export SITE_VERSION=v1.0.06
+export SITE_VERSION_DATE=2022.06.22
+export SITE_UPDATE_MESSAGE="Refactor 'git.domain' and add methods 'create|refresh|delete' to 'dbs'."
 
 # rvm domain
 rvm.domain(){
@@ -189,10 +189,17 @@ git.domain(){
 git.domain.methods(){ echo "methods|help|init|encora.init|encora|gmail.init|gmail|print"; }
 git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
 git.domain.init(){ site.function_names 'git.domain'; }
-git.domain.encora.init(){ encora_name=$1; encora_email=$2; }
+git.domain.email(){
+  if test "$domain" == 'gmail'; then 
+    email=gmail_email
+  else
+    email=justworks_email
+  fi
+}
+git.domain.justworks.init(){ justworks_name=$1; justworks_email=$2; }
 git.domain.encora(){
-  git config --global user.name "$encora_name"
-  git config --global user.email "$encora_email"
+  git config --global user.name "$justworks_name"
+  git config --global user.email "$justworks_email"
 }
 git.domain.gmail.init(){ gmail_name=$1; gmail_email=$2; }
 git.domain.gmail(){
@@ -205,9 +212,9 @@ git.domain.print(){
   if test "$domain" == 'gmail'; then 
     ansi --no-newline --green "gmail"
     ansi --no-newline " "
-    ansi --black-intense "encora"
+    ansi --black-intense "justworks"
   else
-    ansi --no-newline --green "encora"
+    ansi --no-newline --green "justworks"
     ansi --no-newline " "
     ansi --black-intense "gmail"
   fi
@@ -234,7 +241,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps"; }
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps|create|refresh|delete"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)
@@ -510,6 +517,37 @@ dbs.dumps(){
   fi
 }
 
+dbs.create(){
+  local refresh=$(test -z $2 && echo "[daily]")
+  if test $(site.is_site) == 'yes'; then
+    if test $(dbs.domain) == 'remote'; then
+      script/docker-sanitized-db/created-db -e $justworks_email -r $refresh
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
+    fi
+  fi
+}
+dbs.refresh(){
+  if test $(site.is_site) == 'yes'; then
+    if test $(dbs.domain) == 'remote'; then
+      script/docker-sanitized-db/refresh-db -u $DB_REMOTE_USER -p $DB_REMOTE_PASS
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
+    fi
+  fi
+}
+dbs.delete(){
+  local email=$1
+  local refresh=$(test -z $2 && echo "[daily]")
+  if test $(site.is_site) == 'yes'; then
+    if test $(dbs.domain) == 'remote'; then
+      script/docker-sanitized-db/delete-db -u $DB_REMOTE_USER -p $DB_REMOTE_PASS
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
+    fi
+  fi
+}
+
 # services
 services(){
   site.function_handler $*
@@ -771,9 +809,9 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rvm.domain" "[print]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "env.domain" "[print|development|test]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs.domain" "[print|local|remote|multi]"
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|encora|gmail]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|download|import|dumps]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|download|import|dumps|create|refresh|delete]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services" "[print|start|stop]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.mysql" "[console|list|restart|start|stop]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.redis" "[console|list|restart|start|stop]"
@@ -814,7 +852,7 @@ site.init(){
   env.domain.init
   rvm.domain.init $(hash ruby 2>/dev/null && test "$?" -eq 0 && echo true)
   git.domain.init
-  git.domain.encora.init "Roberto Nogueira" "roberto.nogueira@encora.com"
+  git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
   git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
   projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
   dbs.init
