@@ -461,21 +461,26 @@ dbs.download(){
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
 }
 dbs.import(){
-  if test $(dbs.has_database $(dbs.current)) == 'yes'; then
-    export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
-    ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
-    bundle exec rake db:drop &> /dev/null
-  fi;  
-  ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
-  bundle exec rake db:create &> /dev/null
-  if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
-    ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
-    env.domain.development
-    pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current)
-    unset DISABLE_DATABASE_ENVIRONMENT_CHECK
-  else  
-    printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
-  fi
+  if test $(dbs.domain) == 'local'; then
+    if test $(dbs.has_database $(dbs.current)) == 'yes'; then
+      export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Dropping " "databases"
+      bundle exec rake db:drop &> /dev/null
+    fi;  
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
+    bundle exec rake db:create &> /dev/null
+    if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
+      env.domain.development
+      pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current)
+      unset DISABLE_DATABASE_ENVIRONMENT_CHECK
+    else  
+      printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
+    fi
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be local!"
+    ansi ""
+  fi;
 }
 dbs.dumps(){
   local dump_active
