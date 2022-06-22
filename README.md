@@ -192,8 +192,8 @@ Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` ha
 ```shell
 pushd ~/Projects/clockwork_web
 cp config/database.yml config/database.yml.local
-cp ~/Downloads/database.yml.remote config/
-cp ~/Downloads/database.yml.multi config/
+mv ~/Downloads/database.yml.remote config/
+mv ~/Downloads/database.yml.multi config/
 popd
 ```
 
