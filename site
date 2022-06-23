@@ -249,9 +249,9 @@ dbs.init(){
     local)
       ;;
     remote|multi)
-      DB_REMOTE_USER=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
-      DB_REMOTE_PASS=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
-      DB_REMOTE_URL=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
+      export DB_USERNAME=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
+      export DB_PASSWORD=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
+      export DB_HOST=$(test -f config/database.yml && dbs.parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
       DB_REMOTE_HOST='https://sanitized-db.justworks.com'
       ;;
   esac
@@ -290,7 +290,7 @@ dbs.console(){
         ;;
       remote)
         if test $(vpn.connected) == 'yes'; then 
-          mycli -u$DB_REMOTE_USER -p$DB_REMOTE_PASS -h$DB_REMOTE_URL $db
+          mycli -u$DB_USERNAME -p$DB_PASSWORD -h$DB_HOST $db
         else  
           ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
         fi  
@@ -339,7 +339,7 @@ dbs.has_database(){
       ;;
     remote)
       if test $(vpn.connected) == 'yes'; then 
-        res=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SHOW DATABASES;" 2>/dev/null | grep -o $db`
+        res=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SHOW DATABASES;" 2>/dev/null | grep -o $db`
         if [ "$res" == $db ]; then
           echo 'yes'
         else
@@ -361,7 +361,7 @@ dbs.tables(){
       ;;
     remote)
       if test $(vpn.connected) == 'yes'; then 
-        s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+        s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
       else  
         s=""  
       fi  
@@ -389,7 +389,7 @@ dbs.records(){
       ;;
     remote)
       if test $(vpn.connected) == 'yes'; then 
-        s=`mysql -u $DB_REMOTE_USER -h $DB_REMOTE_URL -p$DB_REMOTE_PASS -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+        s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
       else  
         s=""  
       fi  
@@ -521,7 +521,7 @@ dbs.create(){
 dbs.refresh(){
   if test $(site.is_site) == 'yes'; then
     if test $(dbs.domain) == 'remote'; then
-      script/docker-sanitized-db/refresh-db -u $DB_REMOTE_USER -p $DB_REMOTE_PASS
+      script/docker-sanitized-db/refresh-db -u $DB_USERNAME -p $DB_PASSWORD
     else
       ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
     fi
@@ -532,25 +532,33 @@ dbs.delete(){
   local refresh=$(test -z $2 && echo "[daily]")
   if test $(site.is_site) == 'yes'; then
     if test $(dbs.domain) == 'remote'; then
-      script/docker-sanitized-db/delete-db -u $DB_REMOTE_USER -p $DB_REMOTE_PASS
+      script/docker-sanitized-db/delete-db -u $DB_USERNAME -p $DB_PASSWORD
     else
       ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
     fi
   fi
 }
 dbs.rebuild_test(){
+  local dbs_location=$(dbs.domain)
+  export DB_NAME=$(dbs.current test)
   if test $(site.is_site) == 'yes'; then
-    if test $(dbs.domain) == 'local'; then
-      ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_test.sh"
-      ./rebuild_test_db.sh
-      ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
-      dbs.init
-      ansi ""
-    else
-      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be local!"
-    fi
+    case $dbs_location in
+      local)
+        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_test_db.sh"
+        ./rebuild_test_db.sh
+        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
+        dbs.init
+        ansi ""
+        ;;
+      remote)
+        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_remote_test_db.sh"
+        ./rebuild_remote_test_db.sh
+        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
+        dbs.init
+        ansi ""
+        ;;
+    esac
   fi
-
 }
 
 # services
