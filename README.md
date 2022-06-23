@@ -88,6 +88,10 @@ $ site dbs import
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
 19.2GiB 6:31:39 [ 858KiB/s] [============..===========] 100%
 
+$ site dbs rebuild_test
+==> Running rebuild_test.sh
+==> Running dbs.init
+
 $ site dbs.domain remote
 $ site dbs console
 :
