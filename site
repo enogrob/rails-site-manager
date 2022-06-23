@@ -515,7 +515,7 @@ dbs.create(){
   if test $(site.is_site) == 'yes'; then
     script/docker-sanitized-db/create-db -e $justworks_email -r $refresh
   else
-    ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "Must be executed under the '$(site.name)' folder"
   fi
 }
 dbs.refresh(){
