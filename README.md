@@ -63,7 +63,7 @@ $ services.redis.methods
 methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
-methods|help|init|console|current|download|import|dumps|create|refresh|delete|print
+methods|help|init|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
 ```
 
 Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
@@ -120,7 +120,7 @@ $ site services stop
 ```shell
 $ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.06
+Site v1.0.07
 
 site    [print|version]
 vpn    [connected|loop|print]
@@ -130,7 +130,7 @@ env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
-dbs    [print|download|import|dumps|create|refresh|delete]
+dbs    [print|download|import|dumps|create|refresh|delete|rebuild_test]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
@@ -218,6 +218,7 @@ site update
 
 **Changes log**
 
+* **1.0.07** Add method `rebuild_test` to `dbs`.
 * **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
 * **1.0.05** Add `vpn` namespace.
 * **1.0.04** Refactor `dbs.import`.

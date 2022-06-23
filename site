@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.06
+export SITE_VERSION=v1.0.07
 export SITE_VERSION_DATE=2022.06.22
-export SITE_UPDATE_MESSAGE="Refactor 'git.domain' and add methods 'create|refresh|delete' to 'dbs'."
+export SITE_UPDATE_MESSAGE="Add method 'rebuild_test' to 'dbs'."
 
 # rvm domain
 rvm.domain(){
@@ -241,7 +241,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps|create|refresh|delete"; }
+dbs.methods(){ echo "methods|help|init|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps|create|refresh|delete|rebuild_test"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)
@@ -545,6 +545,20 @@ dbs.delete(){
     fi
   fi
 }
+dbs.rebuild_test(){
+  if test $(site.is_site) == 'yes'; then
+    if test $(dbs.domain) == 'local'; then
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_test.sh"
+      ./rebuild_test_db.sh
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
+      dbs.init
+      ansi ""
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be local!"
+    fi
+  fi
+
+}
 
 # services
 services(){
@@ -809,7 +823,7 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs.domain" "[print|local|remote|multi]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|download|import|dumps|create|refresh|delete]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|download|import|dumps|create|refresh|delete|rebuild_test]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services" "[print|start|stop]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.mysql" "[console|list|restart|start|stop]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.redis" "[console|list|restart|start|stop]"
