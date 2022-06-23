@@ -186,18 +186,11 @@ dbs.domain.remote(){
 git.domain(){
   site.function_handler $*
 }
-git.domain.methods(){ echo "methods|help|init|encora.init|encora|gmail.init|gmail|print"; }
+git.domain.methods(){ echo "methods|help|init|justworks.init|justworks|gmail.init|gmail|print"; }
 git.domain.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[$(git.domain.methods)]"; }
 git.domain.init(){ site.function_names 'git.domain'; }
-git.domain.email(){
-  if test "$domain" == 'gmail'; then 
-    email=gmail_email
-  else
-    email=justworks_email
-  fi
-}
 git.domain.justworks.init(){ justworks_name=$1; justworks_email=$2; }
-git.domain.encora(){
+git.domain.justworks(){
   git config --global user.name "$justworks_name"
   git config --global user.email "$justworks_email"
 }
