@@ -44,7 +44,7 @@ index fed89e8f531..5fabea1ca98 100755
 +         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
 +         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
 +      }
-+  }'  
++  }'
 +}
 +
 +! test -f config/database.yml.local && cp config/database.yml config/database.yml.local
@@ -55,25 +55,25 @@ index fed89e8f531..5fabea1ca98 100755
 +  DB_PASSWORD=$(test -f config/database.yml && parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
 +  DB_HOST=$(test -f config/database.yml && parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
 +  DB_NAME=clockwork_test
-+  
++
 +  echo "[ * } DROPPING EXISTING TEST DATABASE"
 +  mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "DROP DATABASE IF EXISTS ${DB_NAME}; SHOW DATABASES;"
-+  
++
 +  echo "[ * } CREATING FRESH TEST DATABASE"
 +  mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}; SHOW DATABASES;"
-+  
++
 +  echo "[ * } LOADING TEST DATABASE TABLE STRUCTURE"
 +  RAILS_ENV=test bundle exec rake db:schema:load
-+  
++
 +  echo "[ * } RUNNING ANY NEW DATABASE MIGRATIONS"
 +  RAILS_ENV=test bundle exec rake db:migrate
-+  
++
 +  echo "[ * } LOADING FIXTURES"
 +  RAILS_ENV=test bundle exec rake db:fixtures:load
-+  
++
 +  echo "[ * } SEEDING TEST DATABASE"
 +  RAILS_ENV=test bundle exec rake db:seed
-+  
++
 +  echo "[ * } FINISHED TEST DATABASE CLEANUP"
 +else
 + echo "'database.yml.remote' does not exist in config/"
