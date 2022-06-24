@@ -1,0 +1,80 @@
+diff --git a/rebuild_remote_test_db.sh b/rebuild_remote_test_db.sh
+index fed89e8f531..5fabea1ca98 100755
+--- a/rebuild_remote_test_db.sh
++++ b/rebuild_remote_test_db.sh
+@@ -3,27 +3,51 @@
+ # exit when any command fails
+ set -e
+ 
+-DB_USERNAME="DB_USER_FROM_EMAIL"
+-DB_PASSWORD="DB_PWD_FROM_EMAIL"
+-DB_HOST=sanitized.justworks.com
+-DB_NAME=clockwork_test
+-
+-echo "[ * } DROPPING EXISTING TEST DATABASE"
+-mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "DROP DATABASE IF EXISTS ${DB_NAME}; SHOW DATABASES;"
+-
+-echo "[ * } CREATING FRESH TEST DATABASE"
+-mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}; SHOW DATABASES;"
+-
+-echo "[ * } LOADING TEST DATABASE TABLE STRUCTURE"
+-RAILS_ENV=test bundle exec rake db:schema:load
+-
+-echo "[ * } RUNNING ANY NEW DATABASE MIGRATIONS"
+-RAILS_ENV=test bundle exec rake db:migrate
+-
+-echo "[ * } LOADING FIXTURES"
+-RAILS_ENV=test bundle exec rake db:fixtures:load
+-
+-echo "[ * } SEEDING TEST DATABASE"
+-RAILS_ENV=test bundle exec rake db:seed
+-
+-echo "[ * } FINISHED TEST DATABASE CLEANUP"
++parse_yml(){
++  local prefix=$2
++  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
++  sed -ne "s|^\($s\):|\1|" \
++       -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
++       -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
++  awk -F$fs '{
++      indent = length($1)/2;
++      vname[indent] = $2;
++      for (i in vname) {if (i > indent) {delete vname[i]}}
++      if (length($3) > 0) {
++         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
++         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
++      }
++  }'  
++}
++
++! test -f config/database.yml.local && cp config/database.yml config/database.yml.local
++if  test -f config/database.yml.remote; then
++  cp config/database.yml.remote config/database.yml
++
++  DB_USERNAME=$(test -f config/database.yml && parse_yml config/database.yml | grep development_makara_connections__username | awk -F'"' '{print $2}')
++  DB_PASSWORD=$(test -f config/database.yml && parse_yml config/database.yml | grep development_makara_connections__password | awk -F'"' '{print $2}')
++  DB_HOST=$(test -f config/database.yml && parse_yml config/database.yml | grep development_makara_connections__host | awk -F'"' '{print $2}')
++  DB_NAME=clockwork_test
++  
++  echo "[ * } DROPPING EXISTING TEST DATABASE"
++  mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "DROP DATABASE IF EXISTS ${DB_NAME}; SHOW DATABASES;"
++  
++  echo "[ * } CREATING FRESH TEST DATABASE"
++  mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}; SHOW DATABASES;"
++  
++  echo "[ * } LOADING TEST DATABASE TABLE STRUCTURE"
++  RAILS_ENV=test bundle exec rake db:schema:load
++  
++  echo "[ * } RUNNING ANY NEW DATABASE MIGRATIONS"
++  RAILS_ENV=test bundle exec rake db:migrate
++  
++  echo "[ * } LOADING FIXTURES"
++  RAILS_ENV=test bundle exec rake db:fixtures:load
++  
++  echo "[ * } SEEDING TEST DATABASE"
++  RAILS_ENV=test bundle exec rake db:seed
++  
++  echo "[ * } FINISHED TEST DATABASE CLEANUP"
++else
++ echo "'database.yml.remote' does not exist in config/"
++fi
