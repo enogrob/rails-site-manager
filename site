@@ -539,7 +539,7 @@ dbs.delete(){
   fi
 }
 dbs.rebuild_test(){
-  local dbs_location=$(dbs.domain)
+  local  dbs_location=$(dbs.domain)
   export DB_NAME=$(dbs.current test)
   if test $(site.is_site) == 'yes'; then
     case $dbs_location in
@@ -552,10 +552,15 @@ dbs.rebuild_test(){
         ;;
       remote)
         ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_remote_test_db.sh"
-        ./rebuild_remote_test_db.sh
-        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
-        dbs.init
-        ansi ""
+        $HOME/Projects/rails-site-manager/rebuild_remote_test_db.sh
+        if test $? -eq 0;then
+          ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
+          dbs.init
+          ansi ""
+        else
+          ansi --no-newline --red-intense "==> "; ansi --white-intense "Rebuilt test failed!"
+          ansi ""
+        fi
         ;;
     esac
   fi
@@ -918,6 +923,7 @@ site.print(){
   dbs.domain.printf
   git.domain.print
   services.print
+  test -z $DB_TABLES_DEV && dbs.init
   dbs.print
   dbs.dumps
   projects.print
