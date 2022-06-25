@@ -511,7 +511,7 @@ dbs.dumps(){
 }
 
 dbs.create(){
-  local refresh=$(test -z $1 && echo "daily")
+  local refresh=$(test -z $1 && echo "daily" || echo $1)
   if test $(site.is_site) == 'yes'; then
     script/docker-sanitized-db/create-db -e $justworks_email -r $refresh
   else
@@ -529,7 +529,7 @@ dbs.refresh(){
 }
 dbs.delete(){
   local email=$1
-  local refresh=$(test -z $2 && echo "[daily]")
+  local refresh=$(test -z $2 && echo "daily" || echo $2)
   if test $(site.is_site) == 'yes'; then
     if test $(dbs.domain) == 'remote'; then
       script/docker-sanitized-db/delete-db -u $DB_USERNAME -p $DB_PASSWORD
