@@ -11,7 +11,7 @@ mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "CREA
 
 echo "[ * } LOADING TEST DATABASE TABLE STRUCTURE"
 mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "USE ${DB_NAME};SET GLOBAL FOREIGN_KEY_CHECKS=0;"
-RAILS_ENV=test db/schema.rbbundle exec rake db:schema:load
+RAILS_ENV=test bundle exec rake db:schema:load
 mysql --user="${DB_USERNAME}" -h ${DB_HOST} --password="${DB_PASSWORD}" -e "USE ${DB_NAME};SET GLOBAL FOREIGN_KEY_CHECKS=1;"
 
 echo "[ * } RUNNING ANY NEW DATABASE MIGRATIONS"

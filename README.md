@@ -22,7 +22,7 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 **Dependences:**
 
-* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml) and [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html).
+* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml), [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) and [xidel](https://github.com/benibela/xidel).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
@@ -63,7 +63,7 @@ $ services.redis.methods
 methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
-methods|help|init|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
+methods|help|init|archives|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
 ```
 
 Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
@@ -124,7 +124,7 @@ $ site services stop
 ```shell
 $ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.07
+Site v1.0.08
 
 site    [print|version]
 vpn    [connected|loop|print]
@@ -134,7 +134,7 @@ env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
-dbs    [print|download|import|dumps|create|refresh|delete|rebuild_test]
+dbs    [print|archives|download|import|dumps|create|refresh|delete|rebuild_test]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
@@ -222,6 +222,7 @@ site update
 
 **Changes log**
 
+* **1.0.08** Add method `archives` to `dbs`.
 * **1.0.07** Add method `rebuild_test` to `dbs`.
 * **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
 * **1.0.05** Add `vpn` namespace.
@@ -245,3 +246,4 @@ Based on: [research-obras-devtools](https://github.com/enogrob/research-obras-de
 * [pgcli](https://www.pgcli.com/) - A Terminal Client for Postgresql with AutoCompletion and Syntax Highligting.
 * [pv](http://www.ivarch.com/programs/pv.shtml) - Pipe Viewer.
 * [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) - The noninteractive downloading utility.
+* [xidel](https://github.com/benibela/xidel) - Command line tool to download and extract data from HTML/XML pages or JSON-APIs.
