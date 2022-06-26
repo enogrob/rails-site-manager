@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.08
+export SITE_VERSION=v1.0.09
 export SITE_VERSION_DATE=2022.06.26
-export SITE_UPDATE_MESSAGE="Add method 'archives' to 'dbs'."
+export SITE_UPDATE_MESSAGE="Add method 'notify' to 'site'."
 
 # rvm domain
 rvm.domain(){
@@ -471,7 +471,7 @@ dbs.print(){
 
 dbs.download(){
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
-   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL 
+   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && dbs.notify "dbs.download finished!"
 }
 dbs.import(){
   if test $(dbs.domain) == 'local'; then
@@ -485,7 +485,7 @@ dbs.import(){
     if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
       env.domain.development
-      pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current)
+      pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current) && dbs.notify "dbs.import has finished!"
       unset DISABLE_DATABASE_ENVIRONMENT_CHECK
     else  
       printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
@@ -875,7 +875,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name|is_site|print|update|version$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|name|notify|is_site|print|update|version$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames
@@ -921,6 +921,10 @@ site.name(){
     SITE="$(basename $PWD)" 
   fi   
   echo $SITE
+}
+site.notify() {
+  local message=$1
+	/usr/bin/osascript -e "display notification \"\" with title \"${message}\""
 }
 site.is_site(){
   if test -f config/database.yml; then

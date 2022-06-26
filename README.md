@@ -124,9 +124,9 @@ $ site services stop
 ```shell
 $ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.08
+Site v1.0.09
 
-site    [print|version]
+site    [print|update|version]
 vpn    [connected|loop|print]
 ::
 rvm.domain    [print]
@@ -222,6 +222,7 @@ site update
 
 **Changes log**
 
+* **1.0.09** Add method `notify` to `site`.
 * **1.0.08** Add method `archives` to `dbs`.
 * **1.0.07** Add method `rebuild_test` to `dbs`.
 * **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
