@@ -67,7 +67,7 @@ methods|help|init|archives|console|current|download|import|dumps|create|refresh|
 
 **1. Setup Local DB**
 
-Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab` and then accessing it vi `mycli`.
+Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab` and then accessing it with `mycli`.
 
 **Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected. 
 
@@ -120,7 +120,7 @@ dumps:
 
 **2. Setup Remote DB**
 
-Here it is show a Setup of a Remote `DB` e.g. Creation a`DB` in `Sanitize-db` and then accessing it vi `mycli`.
+Here it is show a Setup of a Remote `DB` e.g. Creation a`DB` in `Sanitize-db` and then accessing it with `mycli`.
 
 **Note:** In order to Create/Accesssin the `DB` in `Sanitize-db`, the `AWS VPN Client` has to be connected. 
 Here it is show a check with Archives, a Creation of a remote `DB` in `Sanitized-db`, and a connection to the underlying `DB` by using `mycli` console. Once the `Sanitized-db` is created, an email is sent with the credentials and the `database.yml` for Remote use. So downloaded them and move to `config` directory under the Site as showed below.
@@ -165,7 +165,7 @@ dbs:
 
 Here it is show the Start/Stop the underlying site services.
 
-```
+```shell
 $ site services start
 03:54:44 web.1    | started with pid 83120
 03:54:44 worker.1 | started with pid 83121
