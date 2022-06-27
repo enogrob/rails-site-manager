@@ -66,6 +66,7 @@ methods|help|init|archives|console|current|download|import|dumps|create|refresh|
 **Example of uses:**
 
 **1. Setup Local DB**
+
 Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab` and then accessing it vi `mycli`.
 
 **Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected. 
@@ -115,6 +116,7 @@ dumps:
 ```
 
 **2. Setup Remote DB**
+
 Here it is show a Setup of a Remote `DB` e.g. Creation a`DB` in `Sanitize-db` and then accessing it vi `mycli`.
 
 **Note:** In order to Create/Accesssin the `DB` in `Sanitize-db`, the `AWS VPN Client` has to be connected. 
@@ -157,6 +159,7 @@ dbs:
 ```
 
 **3. Start/Stop Services**
+
 Here it is show the Start/Stop the underlying site services.
 
 ```
