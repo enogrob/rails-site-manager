@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.09
-export SITE_VERSION_DATE=2022.06.26
-export SITE_UPDATE_MESSAGE="Add method 'notify' to 'site'."
+export SITE_VERSION=v1.0.10
+export SITE_VERSION_DATE=2022.06.27
+export SITE_UPDATE_MESSAGE="Improve method 'print_up' to 'services'."
 
 # rvm domain
 rvm.domain(){
@@ -143,12 +143,8 @@ dbs.domain.printf(){
     if test $(dbs.domain) == 'remote'; then
       if test $(vpn.connected) == 'yes'; then
         ansi --no-newline --green "remote"
-        ansi --no-newline " "
-        ansi --no-newline --underline --green "$DB_REMOTE_HOST"
       else
         ansi --no-newline --red "remote"
-        ansi --no-newline " "
-        ansi --no-newline --underline --red "$DB_REMOTE_HOST"
       fi  
       ansi --no-newline " "
       ansi --no-newline --black-intense "local"
@@ -629,11 +625,26 @@ services.print_up(){
       fi
       ;;
     mysql)
-      if [ ! -z $pid ]; then
-        service=$(printf "%-${major}s" "mysql")
-        ansi --no-newline "  ${service} ";
-        ansi --no-newline --underline --green "localhost:3306";ansi " $pid"
-      fi  
+      case $(dbs.domain) in
+        local)
+          if [ ! -z $pid ]; then
+            service=$(printf "%-${major}s" "mysql")
+            ansi --no-newline "  ${service} ";
+            ansi --no-newline --underline --green "localhost:3306";ansi " $pid"
+          fi  
+          ;;
+        remote)
+          if test $(vpn.connected) == 'yes'; then
+            service=$(printf "%-${major}s" "mysql")
+            ansi --no-newline "  ${service} ";
+            ansi --underline --green "$DB_REMOTE_HOST"
+          else
+            service=$(printf "%-${major}s" "mysql")
+            ansi --no-newline "  ${service} ";
+            ansi --underline --red "$DB_REMOTE_HOST"
+          fi  
+          ;;
+      esac
       ;;
     postgresql)
       if [ ! -z $pid ]; then
@@ -675,7 +686,7 @@ services.print_ups(){
   if test $(dbs.domain) == 'local'; then
     local services=(redis mysql postgresql assets worker web)
   else
-    local services=(redis postgresql assets worker web)
+    local services=(redis mysql postgresql assets worker web)
   fi
   local service_name_lens=()
   local major
@@ -717,7 +728,7 @@ services.print_downs(){
   if test $(dbs.domain) == 'local'; then
     local services=(redis mysql postgresql assets worker web)
   else
-    local services=(redis postgresql assets worker web)
+    local services=(redis mysql postgresql assets worker web)
   fi
   for s in ${services[@]}
   do

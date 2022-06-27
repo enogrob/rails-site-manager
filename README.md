@@ -150,10 +150,11 @@ $ site
 site: clockwork_web  - AWS VPN Client
   rvm domain ruby-2.7.5@rails-5.1.7
   env domain development test
-  dbs domain remote https://sanitized-db.justworks.com local multi
+  dbs domain remote local multi
   git domain gmail justworks
 services:
   redis      localhost:6379 58714
+  mysql      https://sanitized-db.justworks.com
   postgresql localhost:5432 11503
   assets, worker, web
 dbs:
@@ -298,6 +299,7 @@ site update
 
 **Changes log**
 
+* **1.0.10** Improve method `print_up` to `services`.
 * **1.0.09** Add method `notify` to `site`.
 * **1.0.08** Add method `archives` to `dbs`.
 * **1.0.07** Add method `rebuild_test` to `dbs`.
