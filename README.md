@@ -72,6 +72,9 @@ Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab
 **Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected. 
 
 ```shell
+# this has to be performed just once
+$ cp config/database.yml config/database.yml.local
+
 $ site dbs.domain local
 
 $ site dbs download
