@@ -29,10 +29,7 @@ Se References below for further info.
 
 ![](images/screenshot1.png)
 
-**Example of uses:**
-
 Here it is shown possible CLI commands(relevant ones) according to the previous picture following CLI styles e.g. OO and usual bash which can be used interchangeably.
-
 
 ```shell
 $ site.methods
@@ -66,22 +63,20 @@ $ dbs.methods
 methods|help|init|archives|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
 ```
 
-Here it is show a Download/Import a remote `DB` from `Skylab`, setting up the use of the remote DB and a connection to the underlying `DB` by using `mycli` console.
+**Example of uses:**
 
-**Note:** In order to Download the remote DB or even accessing it the `AWS VPN Client` has to be connected. 
+**1. Setup Local DB**
+Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab` and then accessing it vi `mycli`.
+
+**Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected. 
 
 ```shell
-$ site env.domain development
-$ site git.domain gmail
-
-$ site vpn connected
-yes
+$ site dbs.domain local
 
 $ site dbs download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 100%[============..==========>]  18.46G  4.62MB/s    in 62m 51
 
-$ site dbs.domain local
 $ site dbs import 
 ==> Dropping  databases
 ==> Creating  databases
@@ -92,30 +87,105 @@ $ site dbs rebuild_test
 ==> Running rebuild_test.sh
 ==> Running dbs.init
 
-$ site dbs.domain remote
 $ site dbs console
-:
 Connecting to socket /tmp/mysql.sock, owned by user robertonogueira
 MySQL
 mycli 1.25.0
 Home: http://mycli.net
 Bug tracker: https://github.com/dbcli/mycli/issues
-Thanks to the contributor - Klaus Wünschel
+Thanks to the contributor - cxbig
 MySQL root@(none):clockwork_dev> exit
+
+$ site
+site: clockwork_web  - AWS VPN Client
+  rvm domain ruby-2.7.5@rails-5.1.7
+  env domain development test
+  dbs domain local remote multi
+  git domain gmail justworks
+services:
+  redis      localhost:6379 58714
+  mysql      localhost:3306 34946
+  postgresql localhost:5432 11503
+  assets, worker, web
+dbs:
+  clockwork_dev  485 807877204
+  clockwork_test 485 3413
+dumps:
+  clockwork_sanitized_no_excluded_tables.sql.gz
+```
+
+**2. Setup Remote DB**
+Here it is show a Setup of a Remote `DB` e.g. Creation a`DB` in `Sanitize-db` and then accessing it vi `mycli`.
+
+**Note:** In order to Create/Accesssin the `DB` in `Sanitize-db`, the `AWS VPN Client` has to be connected. 
+Here it is show a check with Archives, a Creation of a remote `DB` in `Sanitized-db`, and a connection to the underlying `DB` by using `mycli` console. Once the `Sanitized-db` is created, an email is sent with the credentials and the `database.yml` for Remote use. So downloaded them and move to `config` directory under the Site as showed below.
+
+```shell
+$ site dbs archives
+Archive data        File Name                               Ts     File Size
+2022-06-26 23:22:29 light/latest/backup_light_latest.tar.gz latest 53 GB
 :
 
-$ site services start 
-:
-1:05:47 web.1    | started with pid 60027
-01:05:47 worker.1 | started with pid 60028
-01:05:47 assets.1 | started with pid 60029
-01:05:47 assets.1 | yarn run v1.22.19
+$ site dbs create
+
+$ mv ~/Downloads/database.yml.remote config/
+$ mv ~/Downloads/database.yml.multi config/
+
+$ site dbs.domain remote
+
+$ site dbs console
+MySQL
+mycli 1.25.0
+Home: http://mycli.net
+Bug tracker: https://github.com/dbcli/mycli/issues
+Thanks to the contributor - Jonathan Slenders
+clockwork_dev> exit
+
+$ site
+site: clockwork_web  - AWS VPN Client
+  rvm domain ruby-2.7.5@rails-5.1.7
+  env domain development test
+  dbs domain remote https://sanitized-db.justworks.com local multi
+  git domain gmail justworks
+services:
+  redis      localhost:6379 58714
+  postgresql localhost:5432 11503
+  assets, worker, web
+dbs:
+  clockwork_dev  493 843986809
+  clockwork_test 0
+```
+
+**3. Start/Stop Services**
+Here it is show the Start/Stop the underlying site services.
+
+```
+$ site services start
+03:54:44 web.1    | started with pid 83120
+03:54:44 worker.1 | started with pid 83121
+03:54:44 assets.1 | started with pid 83122
 :
 
 # from another terminal
 $ site
-:
-$ site services stop 
+site: clockwork_web  - AWS VPN Client
+  rvm domain ruby-2.7.5@rails-5.1.7
+  env domain development test
+  dbs domain remote https://sanitized-db.justworks.com local multi
+  git domain gmail justworks
+services:
+  redis      localhost:6379 58714
+  postgresql localhost:5432 11503
+  assets     yarn.js watch  83122
+  worker     http://localhost:3000/sidekiq 83121
+  web        http://localhost:3000 83120
+dbs:
+  clockwork_dev  493 843986809
+  clockwork_test 0
+dumps:
+  clockwork_sanitized_no_excluded_tables.sql.gz
+
+$ site services stop
 :
 ```
 
