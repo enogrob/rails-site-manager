@@ -138,6 +138,10 @@ $ mv ~/Downloads/database.yml.multi config/
 
 $ site dbs.domain remote
 
+$ site dbs rebuild_test
+==> Running rebuild_test.sh
+==> Running dbs.init
+
 $ site dbs console
 MySQL
 mycli 1.25.0
@@ -159,7 +163,7 @@ services:
   assets, worker, web
 dbs:
   clockwork_dev  493 843986809
-  clockwork_test 0
+  clockwork_test 485 3412
 ```
 
 **3. Start/Stop Services**
@@ -268,7 +272,7 @@ test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rail
 
 Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` have to be placed in `config` directory in Rails project directory tree e.g. `clockwork_web`.
 
-**Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email.
+**Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email. Check if the test db  connections points to the remote db instead of local, if not updated it.
 
 ```shell
 pushd ~/Projects/clockwork_web
