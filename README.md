@@ -171,7 +171,7 @@ dbs:
 Here it is show the Start/Stop the underlying site services.
 
 ```shell
-$ site services start
+$ site start
 03:54:44 web.1    | started with pid 83120
 03:54:44 worker.1 | started with pid 83121
 03:54:44 assets.1 | started with pid 83122
@@ -196,7 +196,7 @@ dbs:
 dumps:
   clockwork_sanitized_no_excluded_tables.sql.gz
 
-$ site services stop
+$ site stop
 :
 ```
 
@@ -207,7 +207,7 @@ $ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
 Site v1.0.09
 
-site    [print|update|version]
+site    [print|start|stop|update|version]
 vpn    [connected|loop|print]
 ::
 rvm.domain    [print]
@@ -303,6 +303,7 @@ site update
 
 **Changes log**
 
+* **1.0.11** Add methods `start|stop` to `site`.
 * **1.0.10** Improve method `print_up` to `services`.
 * **1.0.09** Add method `notify` to `site`.
 * **1.0.08** Add method `archives` to `dbs`.
