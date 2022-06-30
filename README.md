@@ -33,7 +33,7 @@ Here it is shown possible CLI commands(relevant ones) according to the previous 
 
 ```shell
 $ site.methods
-methods|help|init|name|print|version
+methods|help|init|name|print|start|stop|version
 
 $ vpn.methods
 methods|help|init|connected|loop|print
