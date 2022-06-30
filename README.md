@@ -178,21 +178,21 @@ $ site start
 :
 
 # from another terminal
-$ site
-site: clockwork_web  - AWS VPN Client
+$ sitesite: clockwork_web  - AWS VPN Client
   rvm domain ruby-2.7.5@rails-5.1.7
   env domain development test
-  dbs domain remote https://sanitized-db.justworks.com local multi
+  dbs domain remote local multi
   git domain gmail justworks
 services:
-  redis      localhost:6379 58714
-  postgresql localhost:5432 11503
-  assets     yarn.js watch  83122
-  worker     http://localhost:3000/sidekiq 83121
-  web        http://localhost:3000 83120
+  redis      localhost:6379 633
+  mysql      https://sanitized-db.justworks.com
+  postgresql localhost:5432 643
+  assets     yarn.js watch  10671
+  worker     http://localhost:3000/sidekiq 10670
+  web        http://localhost:3000 10669
 dbs:
   clockwork_dev  493 843986809
-  clockwork_test 0
+  clockwork_test 485 3412
 dumps:
   clockwork_sanitized_no_excluded_tables.sql.gz
 
