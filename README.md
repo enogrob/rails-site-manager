@@ -203,11 +203,10 @@ $ site stop
 **For further help:**
 
 ```shell
-$ site --help
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.09
+Site v1.0.12
 
-site    [print|start|stop|update|version]
+site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
 ::
 rvm.domain    [print]
@@ -215,10 +214,12 @@ env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
-dbs    [print|archives|download|import|dumps|create|refresh|delete|rebuild_test]
+dbs    [print|download|import|dumps|create|refresh|delete|rebuild_test]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
+::
+skylab    [instances|sandbox|staging|prod|control|console|print]
 ::
 homepage https://github.com/enogrob/rails-site-manager
 ```
@@ -303,6 +304,7 @@ site update
 
 **Changes log**
 
+* **1.0.11** Add namespace `skylab`.
 * **1.0.11** Add methods `start|stop` to `site`.
 * **1.0.10** Improve method `print_up` to `services`.
 * **1.0.09** Add method `notify` to `site`.

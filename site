@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.11
-export SITE_VERSION_DATE=2022.06.29
-export SITE_UPDATE_MESSAGE="Add methods 'start|stop' to 'site'."
+export SITE_VERSION=v1.0.12
+export SITE_VERSION_DATE=2022.07.14
+export SITE_UPDATE_MESSAGE="Add namespace 'skylab'."
 
 # rvm domain
 rvm.domain(){
@@ -787,6 +787,106 @@ services.redis.restart(){ brew services restart redis; }
 services.redis.start(){ brew services start redis; }
 services.redis.stop(){ brew services stop redis; }
 
+# skylab
+skylab(){
+  site.function_handler $*
+}
+skylab.methods(){ echo "methods|help|init|instances|sandbox|staging|prod|control|console|print"; }
+skylab.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "skylab" "[$(skylab.methods)]"; }
+skylab.init(){ 
+  skylab_print=$1
+  site.function_names 'skylab'
+  SKYLAB_INSTANCES=https://hosts.justworks.com/instances
+}
+skylab.instances(){
+  local instances=$SKYLAB_INSTANCES
+  if test $(vpn.connected) == 'yes'; then
+    curl -s $instances
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+    ansi ""
+  fi  
+}
+skylab.sandbox(){
+  local instances=$SKYLAB_INSTANCES
+  if test $(vpn.connected) == 'yes'; then
+    curl -s $instances | grep '^(running) : sandbox' | sed 's/(running) ://g'
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+    ansi ""
+  fi  
+}
+skylab.staging(){
+  local instances=$SKYLAB_INSTANCES
+  if test $(vpn.connected) == 'yes'; then
+    curl -s $instances | grep '^(running) : staging' | sed 's/(running) ://g'
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+    ansi ""
+  fi  
+}
+skylab.prod(){
+  local instances=$SKYLAB_INSTANCES
+  if test $(vpn.connected) == 'yes'; then
+    curl -s $instances | grep '^(running) : prod' | sed 's/(running) ://g'
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+    ansi ""
+  fi  
+}
+skylab.control(){
+  local instances=$SKYLAB_INSTANCES
+  if test $(vpn.connected) == 'yes'; then
+    SKYLAB_INSTANCE=$1
+    curl -s $instances | grep "${SKYLAB_INSTANCE}" > /dev/null
+    if [ $? -eq 1 ]; then
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' does not exist!"
+    fi
+    fping -C 1 $SKYLAB_INSTANCE &> /dev/null
+    if [ $? -eq 0 ]; then 
+      ssh-copy-id $PUPPET_USER@$SKYLAB_INSTANCE &> /dev/null
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' not pinging!"
+    fi
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+      ansi ""
+    fi  
+}
+skylab.console(){
+  if test $(vpn.connected) == 'yes'; then
+    if ! test -z $SKYLAB_INSTANCE; then
+      fping -C 1 $SKYLAB_INSTANCE &>/dev/null
+      if [ $? -eq 0 ]; then 
+        ssh $PUPPET_USER@$SKYLAB_INSTANCE 
+      else
+        ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' not pinging!"
+      fi
+    fi
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+  fi
+}
+skylab.print(){
+  if [ "$skylab_print" = "true" ]; then
+    if test $(vpn.connected) == 'yes'; then
+      if ! test -z $SKYLAB_INSTANCE; then
+        ansi "skylab instance:"
+        fping -C 1 $SKYLAB_INSTANCE &>/dev/null
+        if [ $? -eq 0 ]; then 
+          ansi --green "  ${SKYLAB_INSTANCE}"
+        else
+          ansi --red "  ${SKYLAB_INSTANCE}"
+        fi
+      fi
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "AWS VPN Client not connected!"
+      ansi ""
+    fi  
+  fi
+}
+
 # vpn
 vpn(){
   site.function_handler $*
@@ -858,6 +958,8 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.mysql" "[console|list|restart|start|stop]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services.redis" "[console|list|restart|start|stop]"
         printf "::\n"  
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "skylab" "[instances|sandbox|staging|prod|control|console|print]"
+        printf "::\n"  
         printf "\e[0;32m%s \e[4m%s\e[0m\e[0m\n" "homepage" "https://github.com/enogrob/rails-site-manager"
         printf "\n"
         ;;
@@ -902,6 +1004,7 @@ site.init(){
   services.init
   services.mysql.init
   services.redis.init
+  skylab.init true
   vpn.init true
 }
 site.function_handler(){
@@ -954,6 +1057,7 @@ site.print(){
   test -z $DB_TABLES_DEV && dbs.init
   dbs.print
   dbs.dumps
+  skylab.print
   projects.print
   printf ""  
 }
