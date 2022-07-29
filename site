@@ -598,6 +598,7 @@ rdd.set(){
 rdd.unset(){
   bundle remove amazing_print table_print pry-clipboard pry-doc pry-gem pry-rescue pry-stack_explorer
   bundle install
+  git checkout -- Gemfile
 }
 rdd.check(){
   cat Gemfile | grep "pry-rescue" > /dev/null
