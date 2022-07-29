@@ -204,7 +204,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.14
+Site v1.0.15
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -215,6 +215,7 @@ dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
 dbs    [print|download|import|dumps|create|refresh|delete|rebuild_test]
+rdd    [check|print|set|unset]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
@@ -302,6 +303,7 @@ site update
 
 **Changes log**
 
+* **1.0.15** Add namespace `rdd`.
 * **1.0.14** Namespace `skylab` now is seem as a service.
 * **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
 * **1.0.12** Add namespace `skylab`.
