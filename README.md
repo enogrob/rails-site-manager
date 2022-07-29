@@ -251,23 +251,21 @@ popd
 It is required that the some initial values are set in initialization section of the `site` script e.g. `site.init`. e.g.
 ```shell
 :
-site.init(){
-  unset fnames
-  :
   git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
   git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-  :
 }
 :
 ```
 
-Also add the source of the `Rails Site Manager` and the `Puppet Credentials` in the `~/.bashrc` .
+Also add the source of the `Rails Site Manager`, the `Puppet Credentials` and the some initial values for emails(change to yours) are set in `~/.bashrc`.
 ```shell
 :
 # rails site manager
 export PUPPET_USER=<user login>
 export PEPPET_PASS=<password>
 test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
+git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
+git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
 :
 ```
 
@@ -304,7 +302,8 @@ site update
 
 **Changes log**
 
-* **1.0.11** Add namespace `skylab`.
+* **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
+* **1.0.12** Add namespace `skylab`.
 * **1.0.11** Add methods `start|stop` to `site`.
 * **1.0.10** Improve method `print_up` to `services`.
 * **1.0.09** Add method `notify` to `site`.
