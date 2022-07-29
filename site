@@ -1089,7 +1089,11 @@ site.is_site(){
   fi
 }
 site.print(){
-  printf "site: \e[1;37m%s \e[0m - \e[0;36m%s\e[0m - \e[0;36m%s\e[0m\n" "$(site.name)" "$(rdd.print)" "$(vpn.print)"
+  if test $(site.is_site) = 'yes'; then
+    printf "site: \e[1;37m%s \e[0m - \e[0;36m%s\e[0m - \e[0;36m%s\e[0m\n" "$(site.name)" "$(rdd.print)" "$(vpn.print)"
+  else
+    printf "site: \e[1;37m%s \e[0m - \e[0;36m%s\e[0m\n" "$(site.name)" "$(vpn.print)"
+  fi
   rvm.domain.print
   env.domain.print
   dbs.domain.printf
