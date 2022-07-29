@@ -204,7 +204,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.12
+Site v1.0.14
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -302,6 +302,7 @@ site update
 
 **Changes log**
 
+* **1.0.14** Namespace `skylab` now is seem as a service.
 * **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
 * **1.0.12** Add namespace `skylab`.
 * **1.0.11** Add methods `start|stop` to `site`.
