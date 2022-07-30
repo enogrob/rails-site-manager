@@ -204,7 +204,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.15
+Site v1.0.16
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -265,8 +265,8 @@ Also add the source of the `Rails Site Manager`, the `Puppet Credentials` and th
 export PUPPET_USER=<user login>
 export PEPPET_PASS=<password>
 test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
-git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
-git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
+git.domain.justworks.init "<name>" "<justworks email>"
+git.domain.gmail.init "<name>" "<gmail email>" 
 :
 ```
 
@@ -303,6 +303,7 @@ site update
 
 **Changes log**
 
+* **1.0.16** Refactor `skylab` namespace.
 * **1.0.15** Add namespace `rdd`.
 * **1.0.14** Namespace `skylab` now is seem as a service.
 * **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
