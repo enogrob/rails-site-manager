@@ -215,8 +215,9 @@ dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
 dbs    [print|create|refresh|delete|rebuild_test]
-dumps  [print|download|import|list]
+dumps    [print|download|import|list]
 rdd    [check|print|set|unset]
+::
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
 services.redis    [console|list|restart|start|stop]
