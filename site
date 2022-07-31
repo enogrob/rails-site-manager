@@ -1025,7 +1025,7 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|refresh|delete|rebuild_test]"
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import|list]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rdd" "[check|print|set|unset]"
         printf "::\n"  
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services" "[print|start|stop]"
