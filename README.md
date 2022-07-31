@@ -77,11 +77,11 @@ $ cp config/database.yml config/database.yml.local
 
 $ site dbs.domain local
 
-$ site dbs download
+$ site dumps download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 100%[============..==========>]  18.46G  4.62MB/s    in 62m 51
 
-$ site dbs import 
+$ site dumps import 
 ==> Dropping  databases
 ==> Creating  databases
 ==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
@@ -204,7 +204,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.16
+Site v1.0.17
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -214,7 +214,8 @@ env.domain    [print|development|test]
 dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
-dbs    [print|download|import|dumps|create|refresh|delete|rebuild_test]
+dbs    [print|create|refresh|delete|rebuild_test]
+dumps  [print|download|import|list]
 rdd    [check|print|set|unset]
 services    [print|start|stop]
 services.mysql    [console|list|restart|start|stop]
@@ -303,6 +304,7 @@ site update
 
 **Changes log**
 
+* **1.0.17** Refactor `dumps` as namespace.
 * **1.0.16** Refactor `skylab` namespace.
 * **1.0.15** Add namespace `rdd`.
 * **1.0.14** Namespace `skylab` now is seem as a service.

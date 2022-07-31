@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.16
-export SITE_VERSION_DATE=2022.07.30
-export SITE_UPDATE_MESSAGE="Refactor 'skylab' namespace."
+export SITE_VERSION=v1.0.17
+export SITE_VERSION_DATE=2022.07.31
+export SITE_UPDATE_MESSAGE="Refactor 'dumps' as namespace."
 
 # rvm domain
 rvm.domain(){
@@ -464,12 +464,21 @@ dbs.print(){
   fi  
 }
 
-
-dbs.download(){
+# dumps
+dumps(){
+  site.function_handler $*
+}
+dumps.methods(){ echo "methods|help|init|download|import|print"; }
+dumps.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dumps" "[$(dumps.methods)]"; }
+dumps.init(){ 
+  dumps_print=$1
+  site.function_names 'dumps'
+}
+dumps.download(){
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && dbs.notify "dbs.download finished!"
 }
-dbs.import(){
+dumps.import(){
   if test $(dbs.domain) == 'local'; then
     if test $(dbs.has_database $(dbs.current)) == 'yes'; then
       export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
@@ -491,7 +500,7 @@ dbs.import(){
     ansi ""
   fi;
 }
-dbs.dumps(){
+dumps.print(){
   local dump_active
   local dumps
   if test $(site.is_site) = 'yes'; then
@@ -945,7 +954,7 @@ skylab.print(){
       fi
     else
       ansi --underline --green "https://${SKYLAB}"
-    fi  
+    fi 
   fi 
 }
 
@@ -1063,6 +1072,7 @@ site.init(){
   projects.init $(test -f $HOME/Projects/project-things-today/.todayrc.sh && echo true)
   dbs.init
   dbs.domain.init
+  dumps.init true
   rdd.init true
   services.init
   services.mysql.init
@@ -1123,7 +1133,7 @@ site.print(){
   services.print
   test -z $DB_TABLES_DEV && dbs.init
   dbs.print
-  dbs.dumps
+  dumps.print
   projects.print
   printf ""  
 }
