@@ -83,11 +83,12 @@ $ site dbs.domain local
 $ site dumps download
 ==> Downloading  clockwork_sanitized_no_excluded_tables.sql.gz
 100%[============..==========>]  18.46G  4.62MB/s    in 62m 51
+==> Renaming to  2022-07-21_09-05-00.clockwork_web.sql.gz
 
 $ site dumps import 
 ==> Dropping  databases
 ==> Creating  databases
-==> Importing  clockwork_sanitized_no_excluded_tables.sql.gz
+==> Importing 2022-07-21_09-05-00.clockwork_web.sql.gz
 19.2GiB 6:31:39 [ 858KiB/s] [============..===========] 100%
 
 $ site dbs rebuild_test
@@ -167,6 +168,8 @@ services:
 dbs:
   clockwork_dev  493 843986809
   clockwork_test 485 3412
+dumps:
+  2022-07-21_09-05-00.clockwork_web.sql.gz
 ```
 
 **3. Start/Stop Services**
@@ -218,7 +221,7 @@ dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
 dbs    [print|create|refresh|delete|rebuild_test]
-dumps    [print|download|import|activate|deactivate]
+dumps  [print|download|import|activate|deactivate]
 rdd    [check|print|set|unset]
 ::
 services    [print|start|stop]

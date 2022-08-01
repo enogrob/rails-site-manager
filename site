@@ -478,7 +478,7 @@ dumps.download(){
   local site=$(site.name)
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && dbs.notify "dbs.download finished!"
-   ansi --no-newline --green-intense "==> "; ansi --white-intense "Renaming " "clockwork_sanitized_no_excluded_tables.sql.gz"
+   ansi --no-newline --green-intense "==> "; ansi --white-intense "Renaming to" "$(date +%Y-%m-%d_%H-%M-%S)_${site}.sql.gz"
    mv clockwork_sanitized_no_excluded_tables.sql.gz "$(date +%Y-%m-%d_%H-%M-%S)_${site}.sql.gz"
 }
 dumps.import(){
