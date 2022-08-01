@@ -477,7 +477,7 @@ dumps.init(){
 dumps.download(){
   local site=$(site.name)
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
-   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && dbs.notify "dbs.download finished!"
+   wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && site.notify "dbs.download finished!"
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Renaming to" "$(date +%Y-%m-%d_%H-%M-%S)_${site}.sql.gz"
    mv clockwork_sanitized_no_excluded_tables.sql.gz "$(date +%Y-%m-%d_%H-%M-%S)_${site}.sql.gz"
 }
@@ -498,7 +498,7 @@ dumps.import(){
       file=${files_sql[0]}
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " $file
        env.domain.development
-       pv $file | gunzip | mysql -u root $(dbs.current) && dbs.notify "dbs.import has finished!"
+       pv $file | gunzip | mysql -u root $(dbs.current) && site.notify "dbs.import has finished!"
        unset DISABLE_DATABASE_ENVIRONMENT_CHECK
        unset IFS
        dumps.activate $file
