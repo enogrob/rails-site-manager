@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.18
+export SITE_VERSION=v1.0.19
 export SITE_VERSION_DATE=2022.08.01
-export SITE_UPDATE_MESSAGE="Refactor 'dumps' as activable."
+export SITE_UPDATE_MESSAGE="Correct 'site' with zero param namespaces."
 
 # rvm domain
 rvm.domain(){
@@ -1040,6 +1040,7 @@ vpn.print(){
 # site
 site(){
   local site_methods="+($(site.methods))"
+  local params="+(${fnames#?})"
   if [ -z "$1" ]; then
     site.print
   else   
@@ -1073,7 +1074,14 @@ site(){
         ;;
       $site_methods)
         if [ -z "$2" ]; then
-          site.$1 
+          case $1 in
+            $params)
+              $1
+              ;;
+            *)
+              site.$1
+              ;;
+          esac
         else  
           local param_methods="+($(! test -z "$1" && $1.methods))"
           case $2 in
