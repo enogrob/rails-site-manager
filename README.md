@@ -61,6 +61,9 @@ methods|help|init|console|list|restart|start|stop
 
 $ dbs.methods
 methods|help|init|archives|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
+
+$ dumps.methods
+methods|help|init|download|import|print|activate|deactivate
 ```
 
 **Example of uses:**
@@ -115,7 +118,7 @@ dbs:
   clockwork_dev  485 807877204
   clockwork_test 485 3413
 dumps:
-  clockwork_sanitized_no_excluded_tables.sql.gz
+  2022-07-21_09-05-00.clockwork_web.sql.gz
 ```
 
 **2. Setup Remote DB**
@@ -194,7 +197,7 @@ dbs:
   clockwork_dev  493 843986809
   clockwork_test 485 3412
 dumps:
-  clockwork_sanitized_no_excluded_tables.sql.gz
+  2022-07-21_09-05-00.clockwork_web.sql.gz
 
 $ site stop
 :
@@ -204,7 +207,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.17
+Site v1.0.18
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -215,7 +218,7 @@ dbs.domain    [print|local|remote|multi]
 git.domain    [print|justworks|gmail]
 ::
 dbs    [print|create|refresh|delete|rebuild_test]
-dumps    [print|download|import]
+dumps    [print|download|import|activate|deactivate]
 rdd    [check|print|set|unset]
 ::
 services    [print|start|stop]
@@ -305,6 +308,7 @@ site update
 
 **Changes log**
 
+* **1.0.18** Refactor `dumps` as activable.
 * **1.0.17** Refactor `dumps` as namespace.
 * **1.0.16** Refactor `skylab` namespace.
 * **1.0.15** Add namespace `rdd`.

@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.17
-export SITE_VERSION_DATE=2022.07.31
-export SITE_UPDATE_MESSAGE="Refactor 'dumps' as namespace."
+export SITE_VERSION=v1.0.18
+export SITE_VERSION_DATE=2022.08.01
+export SITE_UPDATE_MESSAGE="Refactor 'dumps' as activable."
 
 # rvm domain
 rvm.domain(){
@@ -468,17 +468,22 @@ dbs.print(){
 dumps(){
   site.function_handler $*
 }
-dumps.methods(){ echo "methods|help|init|download|import|print"; }
+dumps.methods(){ echo "methods|help|init|download|import|print|activate|deactivate"; }
 dumps.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dumps" "[$(dumps.methods)]"; }
 dumps.init(){ 
   dumps_print=$1
   site.function_names 'dumps'
 }
 dumps.download(){
+  local site=$(site.name)
    ansi --no-newline --green-intense "==> "; ansi --white-intense "Downloading " "clockwork_sanitized_no_excluded_tables.sql.gz"
    wget -q --show-progress --user $PUPPET_USER --password $PUPPET_PASS -O clockwork_sanitized_no_excluded_tables.sql.gz $SKYLAB_URL && dbs.notify "dbs.download finished!"
+   ansi --no-newline --green-intense "==> "; ansi --white-intense "Renaming " "clockwork_sanitized_no_excluded_tables.sql.gz"
+   mv clockwork_sanitized_no_excluded_tables.sql.gz "$(date +%Y-%m-%d_%H-%M-%S)_${site}.sql.gz"
 }
 dumps.import(){
+  local site=$(site.name)
+  local files_sql=(`ls *.sql.gz`)
   if test $(dbs.domain) == 'local'; then
     if test $(dbs.has_database $(dbs.current)) == 'yes'; then
       export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
@@ -487,13 +492,19 @@ dumps.import(){
     fi;  
     ansi --no-newline --green-intense "==> "; ansi --white-intense "Creating " "databases"
     bundle exec rake db:create &> /dev/null
-    if test -f clockwork_sanitized_no_excluded_tables.sql.gz; then
-      ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " "clockwork_sanitized_no_excluded_tables.sql.gz"
-      env.domain.development
-      pv clockwork_sanitized_no_excluded_tables.sql.gz | gunzip | mysql -u root $(dbs.current) && dbs.notify "dbs.import has finished!"
-      unset DISABLE_DATABASE_ENVIRONMENT_CHECK
-    else  
-      printf " \e[0;31m%s \e[0m%s\n" "=>" "clockwork_sanitized_no_excluded_tables.sql.gz does not exist"
+    if [ ! -z "$files_sql" ]; then
+      IFS=$'\n'
+      files_sql=( $(printf "%s\n" ${files_sql[@]} | sort -r ) )
+      file=${files_sql[0]}
+      ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " $file
+       env.domain.development
+       pv $file | gunzip | mysql -u root $(dbs.current) && dbs.notify "dbs.import has finished!"
+       unset DISABLE_DATABASE_ENVIRONMENT_CHECK
+       unset IFS
+       dumps.activate $file
+    else
+     ansi --no-newline --red-intense "==> "; ansi --white-intense "Error no dump file"
+     ansi ""
     fi
   else
     ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be local!"
@@ -503,13 +514,14 @@ dumps.import(){
 dumps.print(){
   local dump_active
   local dumps
+  local site=$(site.name)
   if test $(site.is_site) = 'yes'; then
     ansi "dumps:"
     if test -f tmp/devtools/${SITE}.dump_active; then
       dump_active=$(cat tmp/devtools/${SITE}.dump_active)
     fi  
     IFS=$'\n'
-    dumps=(`ls *clockwork_sanitized_no_excluded_tables.sql.gz 2>/dev/null`)
+    dumps=(`ls *${site}.sql.gz 2>/dev/null`)
     dumps=($(printf "%s\n" ${dumps[@]} | sort -r )) 
     if [ ! -z "$dumps" ]; then
       for dump in ${dumps[*]}
@@ -527,6 +539,28 @@ dumps.print(){
     unset IFS
   fi
 }
+dumps.activate(){
+  local dump_active=$1
+  local dumps
+  local site=$(site.name)
+  IFS=$'\n'
+  dumps=(`ls *${site}.sql.gz 2>/dev/null`)
+  if [ ! -z "$dumps" ]; then
+    ! test -d tmp/devtools && mkdir -p tmp/devtools
+    for dump in ${dumps[*]}
+    do
+      if [ "$dump" == "$dump_active" ]; then
+        echo $dump > tmp/devtools/${SITE}.dump_active 
+      fi
+    done
+  fi
+  unset IFS
+}
+dumps.deactivate(){
+  local site=$(site.name)
+  test -f tmp/devtools/${site}.dump_active && rm -rf tmp/devtools/${site}.dump_active
+}
+
 
 dbs.create(){
   local refresh=$(test -z $1 && echo "daily" || echo $1)
@@ -1025,7 +1059,7 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|refresh|delete|rebuild_test]"
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import|activate|deactivate]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rdd" "[check|print|set|unset]"
         printf "::\n"  
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "services" "[print|start|stop]"
