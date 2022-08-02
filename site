@@ -502,6 +502,7 @@ dumps.import(){
        unset DISABLE_DATABASE_ENVIRONMENT_CHECK
        unset IFS
        dumps.activate $file
+       dbs.init
     else
      ansi --no-newline --red-intense "==> "; ansi --white-intense "Error no dump file"
      ansi ""
