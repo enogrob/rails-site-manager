@@ -230,7 +230,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|download|import|dumps|create|refresh|delete|rebuild_test"; }
+dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|dumps|create|refresh|delete|rebuild_test"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)
