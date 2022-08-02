@@ -257,16 +257,7 @@ popd
 
 **Configuration**
 
-It is required that the some initial values are set in initialization section of the `site` script e.g. `site.init`. e.g.
-```shell
-:
-  git.domain.justworks.init "Roberto Nogueira" "rnogueira@justworks.com"
-  git.domain.gmail.init "Roberto Nogueira" "enogrob@gmail.com" 
-}
-:
-```
-
-Also add the source of the `Rails Site Manager`, the `Puppet Credentials` and the some initial values for emails(change to yours) are set in `~/.bashrc`.
+Add the source of the `Rails Site Manager`, the `Puppet Credentials` and the some initial values for emails(change to yours) are set in `~/.bashrc`.
 ```shell
 :
 # rails site manager
