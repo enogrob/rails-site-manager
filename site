@@ -517,8 +517,8 @@ dumps.print(){
   local site=$(site.name)
   if test $(site.is_site) = 'yes'; then
     ansi "dumps:"
-    if test -f tmp/devtools/${SITE}.dump_active; then
-      dump_active=$(cat tmp/devtools/${SITE}.dump_active)
+    if test -f tmp/devtools/${site}.dump_active; then
+      dump_active=$(cat tmp/devtools/${site}.dump_active)
     fi  
     IFS=$'\n'
     dumps=(`ls *${site}.sql.gz 2>/dev/null`)
