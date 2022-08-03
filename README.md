@@ -60,6 +60,9 @@ methods|help|init|console|list|restart|start|stop
 $ services.redis.methods
 methods|help|init|console|list|restart|start|stop
 
+$ skylab.methods
+methods|help|init|instances|sandbox|staging|prod|control|console|print
+
 $ dbs.methods
 methods|help|init|archives|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
 
