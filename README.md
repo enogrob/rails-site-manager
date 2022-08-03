@@ -19,6 +19,7 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 * Support local and remote databases setups, remote import and download databases.
 * Support start/stop services at once with consolidated logs.
 * Better db consoles for `mysql`, `postgresql` and `redis`.
+* Support for `RDD` and `Skylab` console servers.
 
 **Dependences:**
 
