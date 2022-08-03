@@ -303,7 +303,7 @@ site update
 
 **Changes log**
 
-* **1.0.20** Method `site.print` just prints dumps when loca.
+* **1.0.20** Method `site.print` just prints dumps when local.
 * **1.0.19** Correct `site` with zero param namespaces.
 * **1.0.18** Refactor `dumps` as activable.
 * **1.0.17** Refactor `dumps` as namespace.
