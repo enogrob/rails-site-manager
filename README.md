@@ -210,7 +210,7 @@ $ site stop
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.19
+Site v1.0.20
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -302,6 +302,7 @@ site update
 
 **Changes log**
 
+* **1.0.20** Method `site.print` just prints dumps when loca.
 * **1.0.19** Correct `site` with zero param namespaces.
 * **1.0.18** Refactor `dumps` as activable.
 * **1.0.17** Refactor `dumps` as namespace.
