@@ -64,7 +64,7 @@ $ skylab.methods
 methods|help|init|instances|sandbox|staging|prod|control|console|print
 
 $ dbs.methods
-methods|help|init|archives|console|current|download|import|dumps|create|refresh|delete|rebuild_test|print
+methods|help|init|archives|console|current|create|refresh|delete|rebuild_test|print
 
 $ dumps.methods
 methods|help|init|download|import|print|activate|deactivate
