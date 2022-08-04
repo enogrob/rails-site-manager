@@ -212,8 +212,16 @@ $ site stop
 
 **4. Connect to Skylab servers**
 
-```shell
+**Note:** In order to connect to the `skylab` servers the `AWS VPN Client` has to be connected. 
 
+```shell
+$ site skylab sandbox
+:
+==> Instance 'sandbox-app-104' is pinging!
+
+$ skylab.console
+rnogueira@sandbox-app-104:~$
+$ 
 ```
 
 **For further help:**
