@@ -210,6 +210,12 @@ $ site stop
 :
 ```
 
+**4. Connect to Skylab servers**
+
+```shell
+
+```
+
 **For further help:**
 
 ```shell
@@ -263,14 +269,12 @@ popd
 
 Add the source of the `Rails Site Manager`, the `Puppet Credentials` and the some initial values for emails(change to yours) are set in `~/.bashrc`.
 ```shell
-:
 # rails site manager
 export PUPPET_USER=<user login>
 export PEPPET_PASS=<password>
 test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
 git.domain.justworks.init "<name>" "<justworks email>"
 git.domain.gmail.init "<name>" "<gmail email>" 
-:
 ```
 
 Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` have to be placed in `config` directory in Rails project directory tree e.g. `clockwork_web`.
@@ -306,6 +310,7 @@ site update
 
 **Changes log**
 
+* **1.0.21** Clipboard loaded for  `skylab.console`.
 * **1.0.20** Method `site.print` just prints dumps when local.
 * **1.0.19** Correct `site` with zero param namespaces.
 * **1.0.18** Refactor `dumps` as activable.

@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.20
-export SITE_VERSION_DATE=2022.08.03
-export SITE_UPDATE_MESSAGE="Method 'site.print' print dumps just when local."
+export SITE_VERSION=v1.0.21
+export SITE_VERSION_DATE=2022.08.04
+export SITE_UPDATE_MESSAGE="Clipboard loaded for 'skylab.console'."
 
 # rvm domain
 rvm.domain(){
@@ -898,6 +898,7 @@ skylab.sandbox(){
     curl -s $instances | grep '^(running) : sandbox' | sed 's/(running) ://g'
     fping -C 1 $SKYLAB_INSTANCE_SANDBOX &> /dev/null
     if [ $? -eq 0 ]; then 
+      echo "RAILS_ENV=sandbox bundle exec rails console" | pbcopy 
       SKYLAB_INSTANCE=$SKYLAB_INSTANCE_SANDBOX
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
       ansi ""
@@ -917,6 +918,7 @@ skylab.staging(){
     curl -s $instances | grep '^(running) : staging' | sed 's/(running) ://g'
     fping -C 1 $SKYLAB_INSTANCE_STAGING &> /dev/null
     if [ $? -eq 0 ]; then 
+      echo "RAILS_ENV=staging bundle exec rails console" | pbcopy 
       SKYLAB_INSTANCE=$SKYLAB_INSTANCE_STAGING
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE_STAGING}' is pinging!"
       ansi ""
@@ -949,6 +951,7 @@ skylab.control(){
     else  
       fping -C 1 $SKYLAB_INSTANCE &> /dev/null
       if [ $? -eq 0 ]; then 
+        echo "$PUPPET_PASS" | pbcopy 
         ssh-copy-id $PUPPET_USER@$SKYLAB_INSTANCE &> /dev/null
         ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
         ansi ""
@@ -966,7 +969,10 @@ skylab.console(){
   if test $(vpn.connected) == 'yes'; then
     if ! test -z $SKYLAB_INSTANCE; then
       fping -C 1 $SKYLAB_INSTANCE &>/dev/null
-      if [ $? -eq 0 ]; then 
+      if [ $? -eq 0 ]; then
+        echo "sudo su -" | pbcopy 
+        echo "cd /var/www/current" | pbcopy 
+        echo "$PUPPET_PASS" | pbcopy 
         ssh $PUPPET_USER@$SKYLAB_INSTANCE 
       else
         ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' not pinging!"
