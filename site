@@ -970,8 +970,6 @@ skylab.console(){
     if ! test -z $SKYLAB_INSTANCE; then
       fping -C 1 $SKYLAB_INSTANCE &>/dev/null
       if [ $? -eq 0 ]; then
-        echo "sudo su - " | pbcopy;pbpaste
-        echo "cd /var/www/current" | pbcopy;pbpaste
         echo "$PUPPET_PASS" | pbcopy
         ssh $PUPPET_USER@$SKYLAB_INSTANCE 
       else
