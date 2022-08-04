@@ -898,8 +898,6 @@ skylab.sandbox(){
     curl -s $instances | grep '^(running) : sandbox' | sed 's/(running) ://g'
     fping -C 1 $SKYLAB_INSTANCE_SANDBOX &> /dev/null
     if [ $? -eq 0 ]; then 
-      echo "sudo su - " | pbcopy 
-      echo "cd /var/www/current" | pbcopy 
       echo "RAILS_ENV=sandbox bundle exec rails console" | pbcopy 
       SKYLAB_INSTANCE=$SKYLAB_INSTANCE_SANDBOX
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
@@ -920,9 +918,7 @@ skylab.staging(){
     curl -s $instances | grep '^(running) : staging' | sed 's/(running) ://g'
     fping -C 1 $SKYLAB_INSTANCE_STAGING &> /dev/null
     if [ $? -eq 0 ]; then 
-      echo "sudo su - " | pbcopy 
-      echo "cd /var/www/current" | pbcopy 
-      echo "RAILS_ENV=staging bundle exec rails console" | pbcopy 
+      site.pb "RAILS_ENV=staging bundle exec rails console"
       SKYLAB_INSTANCE=$SKYLAB_INSTANCE_STAGING
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE_STAGING}' is pinging!"
       ansi ""
@@ -955,7 +951,7 @@ skylab.control(){
     else  
       fping -C 1 $SKYLAB_INSTANCE &> /dev/null
       if [ $? -eq 0 ]; then 
-        echo "$PUPPET_PASS" | pbcopy 
+        site.pb "$PUPPET_PASS"
         ssh-copy-id $PUPPET_USER@$SKYLAB_INSTANCE &> /dev/null
         ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
         ansi ""
@@ -974,7 +970,9 @@ skylab.console(){
     if ! test -z $SKYLAB_INSTANCE; then
       fping -C 1 $SKYLAB_INSTANCE &>/dev/null
       if [ $? -eq 0 ]; then
-        echo "$PUPPET_PASS" | pbcopy 
+        site.pb "sudo su - "
+        site.pb "cd /var/www/current"
+        site.pb "$PUPPET_PASS"
         ssh $PUPPET_USER@$SKYLAB_INSTANCE 
       else
         ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' not pinging!"
@@ -1161,6 +1159,7 @@ site.name(){
   fi   
   echo $SITE
 }
+site.pb(){ echo "$@" | pbcopy; }
 site.notify() {
   local message=$1
 	/usr/bin/osascript -e "display notification \"\" with title \"${message}\""

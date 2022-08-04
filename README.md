@@ -212,7 +212,7 @@ $ site stop
 
 **4. Connect to Skylab servers**
 
-**Note:** In order to connect to the `skylab` servers the `AWS VPN Client` has to be connected. 
+**Note:** In order to connect to the `skylab` servers the `AWS VPN Client` has to be connected. If it is required the PUPPET PASSWORD is in Clibboard (so just paste it e.g. command+v).
 
 ```shell
 $ site skylab sandbox
