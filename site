@@ -918,7 +918,7 @@ skylab.staging(){
     curl -s $instances | grep '^(running) : staging' | sed 's/(running) ://g'
     fping -C 1 $SKYLAB_INSTANCE_STAGING &> /dev/null
     if [ $? -eq 0 ]; then 
-      site.pb "RAILS_ENV=staging bundle exec rails console"
+      echo "RAILS_ENV=staging bundle exec rails console" | pbcopy
       SKYLAB_INSTANCE=$SKYLAB_INSTANCE_STAGING
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE_STAGING}' is pinging!"
       ansi ""
@@ -951,7 +951,7 @@ skylab.control(){
     else  
       fping -C 1 $SKYLAB_INSTANCE &> /dev/null
       if [ $? -eq 0 ]; then 
-        site.pb "$PUPPET_PASS"
+        echo "$PUPPET_PASS" | pbcopy
         ssh-copy-id $PUPPET_USER@$SKYLAB_INSTANCE &> /dev/null
         ansi --no-newline --green-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' is pinging!"
         ansi ""
@@ -970,9 +970,9 @@ skylab.console(){
     if ! test -z $SKYLAB_INSTANCE; then
       fping -C 1 $SKYLAB_INSTANCE &>/dev/null
       if [ $? -eq 0 ]; then
-        site.pb "sudo su - "
-        site.pb "cd /var/www/current"
-        site.pb "$PUPPET_PASS"
+        echo "sudo su - " | pbcopy;pbpaste
+        echo "cd /var/www/current" | pbcopy;pbpaste
+        echo "$PUPPET_PASS" | pbcopy
         ssh $PUPPET_USER@$SKYLAB_INSTANCE 
       else
         ansi --no-newline --red-intense "==> "; ansi --white-intense "Instance '${SKYLAB_INSTANCE}' not pinging!"
@@ -1159,7 +1159,6 @@ site.name(){
   fi   
   echo $SITE
 }
-site.pb(){ echo "$@" | pbcopy; }
 site.notify() {
   local message=$1
 	/usr/bin/osascript -e "display notification \"\" with title \"${message}\""
