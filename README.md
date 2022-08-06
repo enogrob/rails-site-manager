@@ -212,7 +212,7 @@ $ site stop
 
 **4. Connect to Skylab servers**
 
-**Note:** In order to connect to the `skylab` servers the `AWS VPN Client` has to be connected. If it is required the PUPPET PASSWORD is in Clibboard (so just paste it e.g. command+v).
+**Note:** In order to connect to the `skylab` servers the `AWS VPN Client` has to be connected. If it is required the PUPPET PASSWORD is in Clibboard (so just paste it e.g. `<command+v>`).
 
 ```shell
 $ site skylab sandbox
@@ -224,7 +224,7 @@ $ site skylab
 
 $ skylab.console
 rnogueira@sandbox-app-104:~$ sudo su -
-[sudo] password for rnogueira: <ctrl-v>
+[sudo] password for rnogueira: <command+v>
 # cd /var/www/current
 /var/www/current# RAILS_ENV=sandbox bundle exec rails console
 Loading sandbox environment (Rails 5.2.7)
