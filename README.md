@@ -219,16 +219,23 @@ $ site skylab sandbox
 :
 ==> Instance 'sandbox-app-104' is pinging!
 
+$ site skylab
+  skylab         https://skylab.justworks.com sandbox-app-104
+
 $ skylab.console
-rnogueira@sandbox-app-104:~$
-$ 
+rnogueira@sandbox-app-104:~$ sudo su -
+[sudo] password for rnogueira: <ctrl-v>
+# cd /var/www/current
+/var/www/current# RAILS_ENV=sandbox bundle exec rails console
+Loading sandbox environment (Rails 5.2.7)
+2.7.5 :001 >
 ```
 
 **For further help:**
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.20
+Site v1.0.21
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
