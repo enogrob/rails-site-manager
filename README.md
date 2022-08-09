@@ -261,6 +261,10 @@ homepage https://github.com/enogrob/rails-site-manager
 **Installation:**
 
 ```shell
+# change shell to bash
+chsh -s /bin/bash
+echo 'export BASH_SILENCE_DEPRECATION_WARNING=1' >> ~/.bash_profile
+
 # install site and its deps
 pushd /tmp
 mkdir -p ~/Projects

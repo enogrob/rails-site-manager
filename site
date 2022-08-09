@@ -522,7 +522,7 @@ dumps.print(){
       dump_active=$(cat tmp/devtools/${site}.dump_active)
     fi  
     IFS=$'\n'
-    dumps=(`ls *${site}.sql.gz 2>/dev/null`)
+    dumps=(`ls *.sql.gz 2>/dev/null`)
     dumps=($(printf "%s\n" ${dumps[@]} | sort -r )) 
     if [ ! -z "$dumps" ]; then
       for dump in ${dumps[*]}
