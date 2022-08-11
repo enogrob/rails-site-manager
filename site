@@ -545,13 +545,13 @@ dumps.activate(){
   local dumps
   local site=$(site.name)
   IFS=$'\n'
-  dumps=(`ls *${site}.sql.gz 2>/dev/null`)
+  dumps=(`ls *.sql.gz 2>/dev/null`)
   if [ ! -z "$dumps" ]; then
     ! test -d tmp/devtools && mkdir -p tmp/devtools
     for dump in ${dumps[*]}
     do
       if [ "$dump" == "$dump_active" ]; then
-        echo $dump > tmp/devtools/${SITE}.dump_active 
+        echo $dump > tmp/devtools/${site}.dump_active 
       fi
     done
   fi
