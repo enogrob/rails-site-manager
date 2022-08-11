@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.22
+Site v1.0.23
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.23** Correct `dumps.activate` of dumps namespace.
 * **1.0.22** Add `site.print_domains` to consolidate domains.
 * **1.0.21** Clipboard loaded for  `skylab.console`.
 * **1.0.20** Method `site.print` just prints dumps when local.
