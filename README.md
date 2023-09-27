@@ -234,8 +234,8 @@ Loading sandbox environment (Rails 5.2.7)
 **For further help:**
 
 ```shell
-Crafted (c) 2021~22 by Encora - We are stronger together
-Site v1.0.23
+Crafted (c) 2021~23 by Encora - We are stronger together
+Site v1.0.24
 
 site    [print||start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.24**  `dbs.rebuild_test` for remote.
 * **1.0.23** Correct `dumps.activate` of dumps namespace.
 * **1.0.22** Add `site.print_domains` to consolidate domains.
 * **1.0.21** Clipboard loaded for  `skylab.console`.

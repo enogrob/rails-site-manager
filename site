@@ -1,5 +1,5 @@
 #!/bin/bash
-## Crafted (c) 2022 by Encora - We are stronger together
+## Crafted (c) 2023 by Encora - We are stronger together
 ## Prepared : Roberto Nogueira
 ## File     : site
 ## Project  : rails-site-manager
@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.24
-export SITE_VERSION_DATE=2023.01.02
-export SITE_UPDATE_MESSAGE="Refactor dbs sanitized-db methods"
+export SITE_VERSION=v1.0.25
+export SITE_VERSION_DATE=2023.09.27
+export SITE_UPDATE_MESSAGE="dbs.rebuild_test for remote"
 
 # rvm domain
 rvm.domain(){
@@ -363,18 +363,23 @@ dbs.tables(){
   local db=$1
   local dbs_location=$(dbs.domain)
   local s
-  case $dbs_location in
-    local)
-      s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
-      ;;
-    remote)
-      if test $(vpn.connected) == 'yes'; then 
-        s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
-      else  
-        s=""  
-      fi  
-      ;;
-  esac  
+  local db_test=$(dbs.current test)
+  if [ $db == $db_test ]; then
+    s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+  else
+    case $dbs_location in
+      local)
+        s=`mysql -u root -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+        ;;
+      remote)
+        if test $(vpn.connected) == 'yes'; then 
+          s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT count(*) AS TOTALNUMBEROFTABLES FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+        else  
+          s=""  
+        fi  
+        ;;
+    esac  
+  fi
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 
 }
@@ -391,18 +396,23 @@ dbs.records(){
   local db=$1
   local dbs_location=$(dbs.domain)
   local s
-  case $dbs_location in
-    local)
-      s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
-      ;;
-    remote)
-      if test $(vpn.connected) == 'yes'; then 
-        s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
-      else  
-        s=""  
-      fi  
-      ;;
-  esac  
+  local db_test=$(dbs.current test)
+  if [ $db == $db_test ]; then
+    s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+  else  
+    case $dbs_location in
+      local)
+        s=`mysql -u root -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';"`
+        ;;
+      remote)
+        if test $(vpn.connected) == 'yes'; then 
+          s=`mysql -u $DB_USERNAME -h $DB_HOST -p$DB_PASSWORD -e "SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db';" 2>/dev/null`
+        else  
+          s=""  
+        fi  
+        ;;
+    esac  
+  fi
   echo $(echo -n $s | sed 's/[^0-9]*//g' | tr -d '\n')
 }
 dbs.has_records(){
@@ -491,30 +501,16 @@ dbs.delete(){
   fi
 }
 dbs.rebuild_test(){
-  local  dbs_location=$(dbs.domain)
   export DB_NAME=$(dbs.current test)
   if test $(site.is_site) == 'yes'; then
-    case $dbs_location in
-      local)
-        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_test_db.sh"
-        ./rebuild_test_db.sh
-        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
-        dbs.init
-        ansi ""
-        ;;
-      remote)
-        ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_remote_test_db.sh"
-        $HOME/Projects/rails-site-manager/rebuild_remote_test_db.sh
-        if test $? -eq 0;then
-          ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
-          dbs.init
-          ansi ""
-        else
-          ansi --no-newline --red-intense "==> "; ansi --white-intense "Rebuilt test failed!"
-          ansi ""
-        fi
-        ;;
-    esac
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Restarting" "MySQL"
+    services.mysql stop
+    services.mysql start
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "rebuild_test_db.sh"
+    ./rebuild_test_db.sh
+    ansi --no-newline --green-intense "==> "; ansi --white-intense "Running" "dbs.init"
+    dbs.init
+    ansi ""
   fi
 }
 
