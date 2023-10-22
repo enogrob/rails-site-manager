@@ -10,8 +10,8 @@
 # set -x
 
 export SITE_VERSION=v1.0.25
-export SITE_VERSION_DATE=2023.09.27
-export SITE_UPDATE_MESSAGE="dbs.rebuild_test for remote"
+export SITE_VERSION_DATE=2023.10.22
+export SITE_UPDATE_MESSAGE="site.update is updated"
 
 # rvm domain
 rvm.domain(){
@@ -1212,12 +1212,16 @@ site.print_domains(){
 site.start(){ services.start; }
 site.stop(){ services.stop; }
 site.update(){
-  pushd $HOME/Projects/rails-site-manager
-  git pull
-  source $HOME/.bashrc
-  ansi --white --no-newline "'Rails Site Manager' is now updated to ";ansi --white-intense $SITE_VERSION
-  cowsay $SITE_UPDATE_MESSAGE
-  popd
+  pushd $HOME/Projects/rails-site-manager > /dev/null
+  git pull | grep "Already up to date" > /dev/null
+  if [ $? -eq 1 ]; then
+    source $HOME/.bashrc
+    ansi --white --no-newline "'Rails Site Manager' is now updated to ";ansi --white-intense $SITE_VERSION
+    cowsay $SITE_UPDATE_MESSAGE
+  else
+    ansi --white --no-newline "'Rails Site Manager' is ";ansi --white-intense "Already up to date"
+  fi
+  popd > /dev/null
 }
 site.version(){
   printf "\e[0;37m%s \e[0m%s\n" "Site" "$SITE_VERSION"
