@@ -235,9 +235,9 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~23 by Encora - We are stronger together
-Site v1.0.25
+Site v1.0.26
 
-site    [print||start|stop|update|version]
+site    [master|print|start|stop|update|version]
 vpn    [connected|loop|print]
 ::
 rvm.domain    [print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.26**  `site.master` is created.
 * **1.0.25**  `site.update` is updated.
 * **1.0.24**  `dbs.rebuild_test` for remote.
 * **1.0.23** Correct `dumps.activate` of dumps namespace.

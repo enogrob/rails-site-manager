@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.25
+export SITE_VERSION=v1.0.26
 export SITE_VERSION_DATE=2023.10.22
-export SITE_UPDATE_MESSAGE="site.update is updated"
+export SITE_UPDATE_MESSAGE="site.master is created"
 
 # rvm domain
 rvm.domain(){
@@ -1102,7 +1102,7 @@ site(){
     esac
   fi
 }
-site.methods(){ echo "methods|help|init|function_handler|function_names|name|notify|is_site|print|start|stop|update|version$fnames"; }
+site.methods(){ echo "methods|help|init|function_handler|function_names|master|name|notify|is_site|print|start|stop|update|version$fnames"; }
 site.help(){ printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "site" "[$(site.methods)]"; }
 site.init(){
   unset fnames
@@ -1142,6 +1142,7 @@ site.function_names(){
   local fname=$1
   fnames="$fnames|$fname"
 }
+site.master(){ $HOME/Projects/rails-site-manager/scripts/update-master; }
 site.name(){
   if test $(site.is_site) = 'no'; then
     SITE="$USER@$(hostname)" 
