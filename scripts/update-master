@@ -3,6 +3,7 @@ set -e
 set -o pipefail
 
 pushd $HOME/Projects/clockwork_web > /dev/null
+ansi --no-newline --green-intense "==> "; ansi --white-intense "Git checkout master"
 git checkout master
 git status | grep "On branch master"
 ansi --no-newline --green-intense "==> "; ansi --white-intense "Git fetching master"

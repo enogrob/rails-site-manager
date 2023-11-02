@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.28**  `update-master` script updated.
 * **1.0.27**  `site.branches`,`site.commit`,`site.issues` are created.
 * **1.0.26**  `site.master` is created.
 * **1.0.25**  `site.update` is updated.
