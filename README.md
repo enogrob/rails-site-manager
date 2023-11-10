@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~23 by Encora - We are stronger together
-Site v1.0.27
+Site v1.0.29
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.29**  `dbs.change_refresh_schedule method created` method updated.
 * **1.0.28**  `update-master` script updated.
 * **1.0.27**  `site.branches`,`site.commit`,`site.issues` are created.
 * **1.0.26**  `site.master` is created.
