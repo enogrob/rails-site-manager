@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.28
-export SITE_VERSION_DATE=2023.11.02
-export SITE_UPDATE_MESSAGE="update-master script updated"
+export SITE_VERSION=v1.0.29
+export SITE_VERSION_DATE=2023.11.10
+export SITE_UPDATE_MESSAGE="dbs.change_refresh_schedule method created"
 
 # rvm domain
 rvm.domain(){
@@ -230,7 +230,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|create|refresh|delete|rebuild_test"; }
+dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|create|refresh|change_refresh_schedule|delete|rebuild_test"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)
@@ -484,6 +484,24 @@ dbs.refresh(){
   if test $(site.is_site) == 'yes'; then
     if test $(dbs.domain) == 'remote'; then
       script/docker-sanitized-db/refresh-db -u $DB_USERNAME -p $DB_PASSWORD
+    else
+      ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
+    fi
+  fi
+}
+##
+# Usage command: dbs.change_refresh_schedule daily|weekly|manual
+##
+dbs.change_refresh_schedule() {
+  local schedule=$1
+  if test $(site.is_site) == 'yes'; then
+    if test $(dbs.domain) == 'remote'; then
+      if [ "$schedule" == "daily" ] || [ "$schedule" == "weekly" ] || [ "$schedule" == "manual" ]; then
+        ansi --no-newline --green-intense "==> "; ansi --white-intense "Changing refresh schedule to $schedule";
+        script/docker-sanitized-db/change-refresh-schedule -u $DB_USERNAME -p $DB_PASSWORD -r $schedule
+      else
+        ansi --no-newline --red-intense "==> "; ansi --white-intense "Invalid schedule option! [daily|weekly|manual]"
+      fi
     else
       ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
     fi
@@ -1057,7 +1075,7 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs.domain" "[print|local|remote|multi]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|refresh|delete|rebuild_test]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|change_refresh_schedule|delete|rebuild_test]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import|activate|deactivate]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rdd" "[check|print|set|unset]"
         printf "::\n"  
