@@ -23,7 +23,7 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 **Dependences:**
 
-* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml), [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) and [xidel](https://github.com/benibela/xidel).
+* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml), [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html), [xidel](https://github.com/benibela/xidel) and [pup](https://github.com/EricChiang/pup).
 * Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.30**  `dbs.instances_db_remote method created` add new method.
 * **1.0.29**  `dbs.change_refresh_schedule method created` method updated.
 * **1.0.28**  `update-master` script updated.
 * **1.0.27**  `site.branches`,`site.commit`,`site.issues` are created.
