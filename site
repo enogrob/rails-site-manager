@@ -4,14 +4,14 @@
 ## File     : site
 ## Project  : rails-site-manager
 ## Reference: bash
-## Depends  : ack, ansi, cowsay, foreman, fping, iredis, mycli, pgcli, pv and wget
+## Depends  : ack, ansi, cowsay, foreman, fping, iredis, mycli, pgcli, pv, wget and pup
 ## Purpose  : Help to manage ordinary things.
 
 # set -x
 
-export SITE_VERSION=v1.0.29
-export SITE_VERSION_DATE=2023.11.10
-export SITE_UPDATE_MESSAGE="dbs.change_refresh_schedule method created"
+export SITE_VERSION=v1.0.30
+export SITE_VERSION_DATE=2023.11.14
+export SITE_UPDATE_MESSAGE="dbs.instances_db_remote method created"
 
 # rvm domain
 rvm.domain(){
@@ -230,7 +230,7 @@ projects.print(){
 dbs(){
   site.function_handler $*
 }
-dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|create|refresh|change_refresh_schedule|delete|rebuild_test"; }
+dbs.methods(){ echo "methods|help|init|archives|parse_yml|console|current|has_database|tables|has_tables|records|has_records|print_db|print|create|refresh|change_refresh_schedule|delete|rebuild_test|instances_db_remote"; }
 dbs.help(){ printf "\e[1;37m%s \e[0m \e[1;36m%s\e[0m\n" "dbs" "[$(dbs.methods)]"; }
 dbs.init(){
   local dbs_location=$(dbs.domain)
@@ -505,6 +505,29 @@ dbs.change_refresh_schedule() {
     else
       ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
     fi
+  fi
+}
+##
+# Usage command: dbs.instances_db_remote
+##
+dbs.instances_db_remote() {
+  local url=https://sanitized-db.justworks.com
+  local html_content
+
+  html_content=$(curl -sS "$url")
+
+  if [[ "$(site.is_site)" == 'yes' && "$(dbs.domain)" == 'remote' ]]; then
+    ansi --blue-intense "🐳 Sanitized Docker Databases 🐳"
+    table_content=$(echo "$html_content" | pup 'table')
+    if [[ $table_content =~ $PUPPET_USER ]]; then
+      ansi --no-newline --green-intense "==> "; ansi --blue-intense "User: $PUPPET_USER"
+      # Show only the first line of the table
+      echo -e "$table_content" | grep -m 1 "$PUPPET_USER"
+    else
+      ansi --no-newline --red-intense "User not found!"
+    fi
+  else
+    ansi --no-newline --red-intense "==> "; ansi --white-intense "dbs domain must be remote!"
   fi
 }
 dbs.delete(){
@@ -1075,7 +1098,7 @@ site(){
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs.domain" "[print|local|remote|multi]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "git.domain" "[print|justworks|gmail]"
         printf "::\n"  
-        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|change_refresh_schedule|delete|rebuild_test]"
+        printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dbs" "[print|create|change_refresh_schedule|delete|rebuild_test|instances_db_remote]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "dumps" "[print|download|import|activate|deactivate]"
         printf "\e[1;37m%s   \e[0m \e[1;36m%s\e[0m\n" "rdd" "[check|print|set|unset]"
         printf "::\n"  
