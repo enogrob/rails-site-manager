@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.31
+export SITE_VERSION=v1.0.32
 export SITE_VERSION_DATE=2023.11.15
-export SITE_UPDATE_MESSAGE="'dumps.import' updated in order to resize the DB." 
+export SITE_UPDATE_MESSAGE="'site.update' was updated." 
 
 # rvm domain
 rvm.domain(){
@@ -1264,6 +1264,7 @@ site.update(){
   git pull | grep "Already up to date" > /dev/null
   if [ $? -eq 1 ]; then
     source $HOME/.bashrc
+    brew bundle --no-upgrade
     ansi --white --no-newline "'Rails Site Manager' is now updated to ";ansi --white-intense $SITE_VERSION
     cowsay $SITE_UPDATE_MESSAGE
   else

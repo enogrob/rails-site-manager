@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~23 by Encora - We are stronger together
-Site v1.0.31
+Site v1.0.32
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.31**  `site.update` was updated.
 * **1.0.31**  `dumps.import` updated in order to resize the DB.
 * **1.0.30**  `dbs.instances_db_remote method created` add new method.
 * **1.0.29**  `dbs.change_refresh_schedule method created` method updated.
