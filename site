@@ -589,7 +589,7 @@ dumps.import(){
       file=${files_sql[0]}
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Resizing " $file
       env.domain.development
-      pv $file | gzip -cd  | sed -r '/INSERT INTO `(earnings_entries|voucher_deduction_items|voucher_contribution_items|tax_snapshots|vouchers)`/d' | gzip > temp.sql.gz
+      pv $file | gzip -cd  | sed -r '/INSERT INTO `(earnings_entries|tax_snapshots|invoice_fee_items)`/d' | gzip > temp.sql.gz
       mv temp.sql.gz $file
       ansi --no-newline --green-intense "==> "; ansi --white-intense "Importing " $file
       pv $file | gunzip | mysql -u root $(dbs.current) && site.notify "dbs.import has finished!"
