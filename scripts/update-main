@@ -8,6 +8,7 @@ unset result
 
 ! test "$PWD" == "$HOME/Projects/clockface" && pushd "$HOME/Projects/clockface" > /dev/null && result=1
 nvm use v18.17.1
+ansi --no-newline --green-intense "==> "; ansi --white-intense "Git checkout main"
 git checkout main
 git status | grep "On branch main"
 ansi --no-newline --green-intense "==> "; ansi --white-intense "Git fetching main"
