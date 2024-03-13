@@ -810,7 +810,7 @@ services.print_up(){
       ;;
     clockface)
       if [ ! -z $pid ]; then
-        service=$(printf "%-${major}s" "risky")
+        service=$(printf "%-${major}s" "clockface")
         ansi --no-newline "  ${service} ";
         ansi --no-newline --underline --green-intense "http://localhost:3311";ansi " $pid"
       fi  
