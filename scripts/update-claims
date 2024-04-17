@@ -4,7 +4,7 @@ set -o pipefail
 
 unset result
 
-! test "$PWD" == "$HOME/Projects/RISKY" && pushd "$HOME/Projects/RISKY" > /dev/null && result=1
+! test "$PWD" == "$HOME/Projects/ClaimsHub" && pushd "$HOME/Projects/ClaimsHub" > /dev/null && result=1
 ansi --no-newline --green-intense "==> "; ansi --white-intense "Git checkout main"
 git checkout main
 git status | grep "On branch main"
