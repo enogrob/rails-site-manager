@@ -2,11 +2,6 @@
 set -e
 set -o pipefail
 
-unset DB_NAME
-unset DB_USERNAME
-unset DB_PASSWORD
-source "$HOME/Projects/ClaimsHub/.env"
-
 unset result
 
 ! test "$PWD" == "$HOME/Projects/ClaimsHub" && pushd "$HOME/Projects/ClaimsHub" > /dev/null && result=1
