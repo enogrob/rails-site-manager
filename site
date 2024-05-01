@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.35
-export SITE_VERSION_DATE=2024.04.18
-export SITE_UPDATE_MESSAGE="'claims' service is monitored" 
+export SITE_VERSION=v1.0.36
+export SITE_VERSION_DATE=2024.05.01
+export SITE_UPDATE_MESSAGE="'claims' port is updated" 
 
 # rvm domain
 rvm.domain(){
@@ -812,7 +812,7 @@ services.print_up(){
       if [ ! -z $pid ]; then
         service=$(printf "%-${major}s" "claims")
         ansi --no-newline "  ${service} ";
-        ansi --no-newline --underline --green-intense "http://localhost:3002";ansi " $pid"
+        ansi --no-newline --underline --green-intense "http://localhost:2828";ansi " $pid"
       fi  
       ;;
     face)
@@ -833,7 +833,7 @@ services.print_ups(){
   local pid_worker=$(command ps aux | grep sidekiq | grep -v grep | awk '{print $2}')
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
   local pid_risky=$(netstat -anv | grep LISTEN | grep "[.]3001" | awk '{print $9}' | uniq)
-  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]3002" | awk '{print $9}' | uniq)
+  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]2828" | awk '{print $9}' | uniq)
   local pid_face=$(netstat -anv | grep LISTEN | grep "[.]3311" | awk '{print $9}' | uniq)
   local services=(redis postgresql mysql skylab assets worker web risky face claims)
   local service_name_lens=()
@@ -874,7 +874,7 @@ services.print_downs(){
   local pid_worker=$(command ps aux | grep sidekiq | grep -v grep | awk '{print $2}')
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
   local pid_risky=$(netstat -anv | grep LISTEN | grep "[.]3001" | awk '{print $9}' | uniq)
-  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]3002" | awk '{print $9}' | uniq)
+  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]2828" | awk '{print $9}' | uniq)
   local pid_face=$(netstat -anv | grep LISTEN | grep "[.]3311" | awk '{print $9}' | uniq)
   local services_not_running
   local services=(redis mysql postgresql skylab assets worker web risky face claims)

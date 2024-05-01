@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~24 by Encora - We are stronger together
-Site v1.0.35
+Site v1.0.36
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.36**  `claims` port is updated.
 * **1.0.35**  `claims` service is monitored.
 * **1.0.34**  `clockface` service is monitored.
 * **1.0.33**  `risky` service is monitored.
