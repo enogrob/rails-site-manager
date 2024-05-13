@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+unset result
+
+! test "$PWD" == "$HOME/Projects/honeycomb" && pushd "$HOME/Projects/honeycomb" > /dev/null && result=1
+ansi --no-newline --green-intense "==> "; ansi --white-intense "Git checkout main"
+git checkout main
+git status | grep "On branch main"
+ansi --no-newline --green-intense "==> "; ansi --white-intense "Git fetching main"
+git fetch
+ansi --no-newline --green-intense "==> "; ansi --white-intense "Git pulling main"
+git pull
+git status | grep "Your branch is up to date with 'origin/main'." > /dev/null && ansi --no-newline --green-intense "==> "; ansi --white-intense "Your branch is up to date with 'origin/main'"
+! test -z "$result" && popd > /dev/null

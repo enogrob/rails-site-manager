@@ -329,7 +329,7 @@ site update
 
 **Changes log**
 
-* **1.0.37**  `claims` port is updated to 7654.
+* **1.0.37**  `claims` port is updated to 7654 and `update-honey` script added.
 * **1.0.36**  `claims` port is updated to 2828.
 * **1.0.35**  `claims` service is monitored.
 * **1.0.34**  `clockface` service is monitored.
