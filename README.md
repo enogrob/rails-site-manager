@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~24 by Encora - We are stronger together
-Site v1.0.38
+Site v1.0.39
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -329,6 +329,7 @@ site update
 
 **Changes log**
 
+* **1.0.39**  `update-face` script updated.
 * **1.0.38**  `honey` service is monitored.
 * **1.0.37**  `claims` port is updated to 7654 and `update-honey` script added.
 * **1.0.36**  `claims` port is updated to 2828.
