@@ -1,5 +1,5 @@
 ```
-Roberto Nogueira  
+Roberto Nogueira
 BSd EE, MSd CE
 Solution Integrator Experienced - Certified by Ericsson
 ```
@@ -14,17 +14,17 @@ This is in order to help the working CLI(Object Oriented Bash style) daily activ
 
 **Advantages:**
 
-* Development Flux and Environment seamlessly integrated.
-* Live `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
-* Support local and remote databases setups, remote import and download databases.
-* Support start/stop services at once with consolidated logs.
-* Better db consoles for `mysql`, `postgresql` and `redis`.
-* Support for `RDD` and `Skylab` console servers.
+- Development Flux and Environment seamlessly integrated.
+- Live `rvm`, `env`, `db` and `git` domains, `services` and `databases` information.
+- Support local and remote databases setups, remote import and download databases.
+- Support start/stop services at once with consolidated logs.
+- Better db consoles for `mysql`, `postgresql` and `redis`.
+- Support for `RDD` and `Skylab` console servers.
 
 **Dependences:**
 
-* Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml), [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html), [xidel](https://github.com/benibela/xidel) and [pup](https://github.com/EricChiang/pup).
-* Gem: [foreman](https://github.com/ddollar/foreman).
+- Packages: [ack](https://beyondgrep.com), [ansi](https://github.com/fidian/ansi),[cowsay](https://github.com/tnalpgge/rank-amateur-cowsay), [fping](https://fping.org), [iredis](https://iredis.io), [mycli](https://www.mycli.net), [pgcli](https://www.pgcli.com), [pv](http://www.ivarch.com/programs/pv.shtml), [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html), [xidel](https://github.com/benibela/xidel) and [pup](https://github.com/EricChiang/pup).
+- Gem: [foreman](https://github.com/ddollar/foreman).
 
 Se References below for further info.
 
@@ -76,7 +76,7 @@ methods|help|init|download|import|print|activate|deactivate
 
 Here it is show a Setup of a Local `DB` e.g. Download/Import a `DB` from `Skylab` and then accessing it with `mycli`.
 
-**Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected. 
+**Note:** In order to Download the `DB` from `Skylab`, the `AWS VPN Client` has to be connected.
 
 ```shell
 # this has to be performed just once
@@ -89,7 +89,7 @@ $ site dumps download
 100%[============..==========>]  18.46G  4.62MB/s    in 62m 51
 ==> Renaming to  2022-07-21_09-05-00.clockwork_web.sql.gz
 
-$ site dumps import 
+$ site dumps import
 ==> Dropping  databases
 ==> Creating  databases
 ==> Importing 2022-07-21_09-05-00.clockwork_web.sql.gz
@@ -130,7 +130,7 @@ dumps:
 
 Here it is show a Setup of a Remote `DB` e.g. Creation a`DB` in `Sanitize-db` and then accessing it with `mycli`.
 
-**Note:** In order to Create/Accesssin the `DB` in `Sanitize-db`, the `AWS VPN Client` has to be connected. 
+**Note:** In order to Create/Accesssin the `DB` in `Sanitize-db`, the `AWS VPN Client` has to be connected.
 Here it is show a check with Archives, a Creation of a remote `DB` in `Sanitized-db`, and a connection to the underlying `DB` by using `mycli` console. Once the `Sanitized-db` is created, an email is sent with the credentials and the `database.yml` for Remote use. So downloaded them and move to `config` directory under the Site as showed below.
 
 ```shell
@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~24 by Encora - We are stronger together
-Site v1.0.39
+Site v1.0.40
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -287,18 +287,19 @@ popd
 **Configuration**
 
 Add the source of the `Rails Site Manager`, the `Puppet Credentials` and the some initial values for emails(change to yours) are set in `~/.bashrc`.
+
 ```shell
 # rails site manager
 export PUPPET_USER=<user login>
 export PEPPET_PASS=<password>
 test -f  "$HOME/Projects/rails-site-manager/site" && source "$HOME/Projects/rails-site-manager/site"
 git.domain.justworks.init "<name>" "<justworks email>"
-git.domain.gmail.init "<name>" "<gmail email>" 
+git.domain.gmail.init "<name>" "<gmail email>"
 ```
 
 Also the `database.yml.remote`, `database.yml.multi` and `database.yml.local` have to be placed in `config` directory in Rails project directory tree e.g. `clockwork_web`.
 
-**Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email. Check if the test db  connections points to the remote db instead of local, if not updated it.
+**Note:** The files `database.yml.remote` and `database.yml.multi` are downloaded from the `sanitized DB` email. Check if the test db connections points to the remote db instead of local, if not updated it.
 
 ```shell
 pushd ~/Projects/clockwork_web
@@ -309,11 +310,12 @@ popd
 ```
 
 Once all that is performed just source the `~/.bashrc`, and one is ready to go!
+
 ```shell
 source ~/.bashrc
 ```
 
-**Note:** This underlying project is still under development so mind __to keep its local repo updated__.
+**Note:** This underlying project is still under development so mind **to keep its local repo updated**.
 
 ```shell
 pushd ~/Projects/rails-site-manager
@@ -329,59 +331,60 @@ site update
 
 **Changes log**
 
-* **1.0.39**  `update-face` script updated.
-* **1.0.38**  `honey` service is monitored.
-* **1.0.37**  `claims` port is updated to 7654 and `update-honey` script added.
-* **1.0.36**  `claims` port is updated to 2828.
-* **1.0.35**  `claims` service is monitored.
-* **1.0.34**  `clockface` service is monitored.
-* **1.0.33**  `risky` service is monitored.
-* **1.0.31**  `site.update` was updated.
-* **1.0.31**  `dumps.import` updated in order to resize the DB.
-* **1.0.30**  `dbs.instances_db_remote method created` add new method.
-* **1.0.29**  `dbs.change_refresh_schedule method created` method updated.
-* **1.0.28**  `update-master` script updated.
-* **1.0.27**  `site.branches`,`site.commit`,`site.issues` are created.
-* **1.0.26**  `site.master` is created.
-* **1.0.25**  `site.update` is updated.
-* **1.0.24**  `dbs.rebuild_test` for remote.
-* **1.0.23** Correct `dumps.activate` of dumps namespace.
-* **1.0.22** Add `site.print_domains` to consolidate domains.
-* **1.0.21** Clipboard loaded for  `skylab.console`.
-* **1.0.20** Method `site.print` just prints dumps when local.
-* **1.0.19** Correct `site` with zero param namespaces.
-* **1.0.18** Refactor `dumps` as activable.
-* **1.0.17** Refactor `dumps` as namespace.
-* **1.0.16** Refactor `skylab` namespace.
-* **1.0.15** Add namespace `rdd`.
-* **1.0.14** Namespace `skylab` now is seem as a service.
-* **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
-* **1.0.12** Add namespace `skylab`.
-* **1.0.11** Add methods `start|stop` to `site`.
-* **1.0.10** Improve method `print_up` to `services`.
-* **1.0.09** Add method `notify` to `site`.
-* **1.0.08** Add method `archives` to `dbs`.
-* **1.0.07** Add method `rebuild_test` to `dbs`.
-* **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
-* **1.0.05** Add `vpn` namespace.
-* **1.0.04** Refactor `dbs.import`.
-* **1.0.03** Refactor `dbs.domain` as a really namespace.
-* **1.0.02** Improve `dbs.domain.print` and corrected `dbs.init`.
-* **1.0.01** Implement methods `console|list|restart|start|stop` for  `services.msql` and `services.redis`.
-* **1.0.00** First release.
+- **1.0.40** `claims` port is updated to 2828.
+- **1.0.39** `update-face` script updated.
+- **1.0.38** `honey` service is monitored.
+- **1.0.37** `claims` port is updated to 2828 and `update-honey` script added.
+- **1.0.36** `claims` port is updated to 2828.
+- **1.0.35** `claims` service is monitored.
+- **1.0.34** `clockface` service is monitored.
+- **1.0.33** `risky` service is monitored.
+- **1.0.31** `site.update` was updated.
+- **1.0.31** `dumps.import` updated in order to resize the DB.
+- **1.0.30** `dbs.instances_db_remote method created` add new method.
+- **1.0.29** `dbs.change_refresh_schedule method created` method updated.
+- **1.0.28** `update-master` script updated.
+- **1.0.27** `site.branches`,`site.commit`,`site.issues` are created.
+- **1.0.26** `site.master` is created.
+- **1.0.25** `site.update` is updated.
+- **1.0.24** `dbs.rebuild_test` for remote.
+- **1.0.23** Correct `dumps.activate` of dumps namespace.
+- **1.0.22** Add `site.print_domains` to consolidate domains.
+- **1.0.21** Clipboard loaded for `skylab.console`.
+- **1.0.20** Method `site.print` just prints dumps when local.
+- **1.0.19** Correct `site` with zero param namespaces.
+- **1.0.18** Refactor `dumps` as activable.
+- **1.0.17** Refactor `dumps` as namespace.
+- **1.0.16** Refactor `skylab` namespace.
+- **1.0.15** Add namespace `rdd`.
+- **1.0.14** Namespace `skylab` now is seem as a service.
+- **1.0.13** Emails `git.domain` now is initialized in `~/.bashrc`.
+- **1.0.12** Add namespace `skylab`.
+- **1.0.11** Add methods `start|stop` to `site`.
+- **1.0.10** Improve method `print_up` to `services`.
+- **1.0.09** Add method `notify` to `site`.
+- **1.0.08** Add method `archives` to `dbs`.
+- **1.0.07** Add method `rebuild_test` to `dbs`.
+- **1.0.06** Refactor `git.domain` and add methods `create|refresh|delete` to `dbs`.
+- **1.0.05** Add `vpn` namespace.
+- **1.0.04** Refactor `dbs.import`.
+- **1.0.03** Refactor `dbs.domain` as a really namespace.
+- **1.0.02** Improve `dbs.domain.print` and corrected `dbs.init`.
+- **1.0.01** Implement methods `console|list|restart|start|stop` for `services.msql` and `services.redis`.
+- **1.0.00** First release.
 
 **Refs:**
 
 Based on: [research-obras-devtools](https://github.com/enogrob/research-obras-devtools) - Obras Development process, development utilities and support for Foreman, Docker and editors VsCode and Rubymine.
 
-* [ack](https://beyondgrep.com) - grep-like source code search tool.
-* [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
-* [cowsay](https://github.com/tnalpgge/rank-amateur-cowsay) - Configurable talking characters in ASCII art.
-* [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
-* [fping](https://fping.org) - Scriptable ping program for checking if multiple hosts are up.
-* [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.
-* [mycli](https://www.mycli.net) - A Terminal Client for Mysql with AutoCompletion and Syntax Highligting.
-* [pgcli](https://www.pgcli.com/) - A Terminal Client for Postgresql with AutoCompletion and Syntax Highligting.
-* [pv](http://www.ivarch.com/programs/pv.shtml) - Pipe Viewer.
-* [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) - The noninteractive downloading utility.
-* [xidel](https://github.com/benibela/xidel) - Command line tool to download and extract data from HTML/XML pages or JSON-APIs.
+- [ack](https://beyondgrep.com) - grep-like source code search tool.
+- [ansi](https://github.com/fidian/ansi) - Escape codes in pure bash.
+- [cowsay](https://github.com/tnalpgge/rank-amateur-cowsay) - Configurable talking characters in ASCII art.
+- [foreman](https://github.com/ddollar/foreman) - Manage Procfile-based applications.
+- [fping](https://fping.org) - Scriptable ping program for checking if multiple hosts are up.
+- [iredis](https://iredis.io) - A Terminal Client for Redis with AutoCompletion and Syntax Highligting.
+- [mycli](https://www.mycli.net) - A Terminal Client for Mysql with AutoCompletion and Syntax Highligting.
+- [pgcli](https://www.pgcli.com/) - A Terminal Client for Postgresql with AutoCompletion and Syntax Highligting.
+- [pv](http://www.ivarch.com/programs/pv.shtml) - Pipe Viewer.
+- [wget](https://ftp.gnu.org/old-gnu/Manuals/wget-1.8.1/html_mono/wget.html) - The noninteractive downloading utility.
+- [xidel](https://github.com/benibela/xidel) - Command line tool to download and extract data from HTML/XML pages or JSON-APIs.

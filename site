@@ -9,9 +9,9 @@
 
 # set -x
 
-export SITE_VERSION=v1.0.39
-export SITE_VERSION_DATE=2024.05.20
-export SITE_UPDATE_MESSAGE="'update-face' script updated" 
+export SITE_VERSION=v1.0.40
+export SITE_VERSION_DATE=2024.05.31
+export SITE_UPDATE_MESSAGE="'claims' port is updated to 2828" 
 
 # rvm domain
 rvm.domain(){
@@ -819,7 +819,7 @@ services.print_up(){
       if [ ! -z $pid ]; then
         service=$(printf "%-${major}s" "claims")
         ansi --no-newline "  ${service} ";
-        ansi --no-newline --underline --green-intense "http://localhost:7654";ansi " $pid"
+        ansi --no-newline --underline --green-intense "http://localhost:2828";ansi " $pid"
       fi  
       ;;
     face)
@@ -841,7 +841,7 @@ services.print_ups(){
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
   local pid_risky=$(netstat -anv | grep LISTEN | grep "[.]3001" | awk '{print $9}' | uniq)
   local pid_honey=$(netstat -anv | grep LISTEN | grep "[.]3002" | awk '{print $9}' | uniq)
-  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]7654" | awk '{print $9}' | uniq)
+  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]2828" | awk '{print $9}' | uniq)
   local pid_face=$(netstat -anv | grep LISTEN | grep "[.]3311" | awk '{print $9}' | uniq)
   local services=(redis postgresql mysql skylab assets worker web risky face claims honey)
   local service_name_lens=()
@@ -883,7 +883,7 @@ services.print_downs(){
   local pid_web=$(test -f tmp/pids/server.pid && cat "tmp/pids/server.pid")
   local pid_risky=$(netstat -anv | grep LISTEN | grep "[.]3001" | awk '{print $9}' | uniq)
   local pid_honey=$(netstat -anv | grep LISTEN | grep "[.]3002" | awk '{print $9}' | uniq)
-  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]7654" | awk '{print $9}' | uniq)
+  local pid_claims=$(netstat -anv | grep LISTEN | grep "[.]2828" | awk '{print $9}' | uniq)
   local pid_face=$(netstat -anv | grep LISTEN | grep "[.]3311" | awk '{print $9}' | uniq)
   local services_not_running
   local services=(redis mysql postgresql skylab assets worker web risky face claims honey)
