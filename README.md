@@ -235,7 +235,7 @@ Loading sandbox environment (Rails 5.2.7)
 
 ```shell
 Crafted (c) 2021~24 by Encora - We are stronger together
-Site v1.0.40
+Site v1.0.41
 
 site    [branches|commit|issues|master|print|start|stop|update|version]
 vpn    [connected|loop|print]
@@ -331,6 +331,7 @@ site update
 
 **Changes log**
 
+- **1.0.41** `SKYLAB` set to `www.justworks.com`.
 - **1.0.40** `claims` port is updated to 2828.
 - **1.0.39** `update-face` script updated.
 - **1.0.38** `honey` service is monitored.
